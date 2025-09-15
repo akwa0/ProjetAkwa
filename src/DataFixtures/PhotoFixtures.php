@@ -13,7 +13,7 @@ class PhotoFixtures extends Fixture
 
     {
         $faker =Faker\Factory::create('fr-FR');
-        for ($i=0; $i<5 ; $i++){
+        for ($i=0; $i<8 ; $i++){
             $photo = new Photo();
             $photo -> setDateCreation($faker->dateTimeBetween('-10 years', 'now'));
             $photo -> setDescription($faker->paragraph(3));

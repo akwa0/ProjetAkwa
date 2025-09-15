@@ -11,7 +11,7 @@ class AvisFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {$faker =Faker\Factory::create('fr-FR');
-        for ($i=0; $i<5 ; $i++){
+        for ($i=0; $i<2 ; $i++){
             $avis = new Avis();
             $avis -> setNombreEtoile($faker->randomDigit());
             $avis -> setNombreCommentaire($faker->randomDigit());
@@ -19,7 +19,7 @@ class AvisFixtures extends Fixture
     
             $manager->persist($avis);
         }
-       
+
 
         $manager->flush();
     }
