@@ -12,21 +12,6 @@ use App\Entity\Photo;
 
 final class AcceuilController extends AbstractController
 {
-    #[Route('/acceuil', name: 'app_acceuil')]
-    public function index(): Response
-    {
-        $adresse =['rue'=>'Rue du palais supreme',
-        'numero'=> 25,
-        'codePostal'=>'1030'];
-
-        $var =['nom'=>'Akwa',
-    'hobby'=>'diriger le monde',
-'dateNaissance'=> new \DateTime("2025-09-15"),
-'adresse'=> $adresse 
-];
-
-        return $this->render('acceuil/index.html.twig',$var);
-    }
     #[Route('acceuil/index.html.twig')]
     public function testModele (EntityManagerInterface $em){
         //on va obtenir ds entités de la BD 
