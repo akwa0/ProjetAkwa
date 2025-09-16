@@ -16,6 +16,7 @@ class AvisFixtures extends Fixture
             $avis -> setNombreEtoile($faker->randomDigit());
             $avis -> setNombreCommentaire($faker->randomDigit());
             $avis -> setdateCreation($faker->dateTimeBetween('-10 years', 'now'));
+            $avis -> setCommentaire($faker->sentence(10));
     
             $manager->persist($avis);
         }

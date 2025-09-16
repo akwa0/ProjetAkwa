@@ -12,7 +12,7 @@ use App\Entity\Message;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-
+use phpDocumentor\Reflection\Types\Boolean;
 
 final class FormsController extends AbstractController
 {
@@ -38,12 +38,11 @@ final class FormsController extends AbstractController
         if ($formMessage->isSubmitted()) {
             // mise à jour de la date
             $message->setDateEnvoie(new DateTime());
-
-
             $em->persist($message);
             $em->flush();
             return $this->redirectToRoute('app_form_afficher_message');
-        } else {
+        } 
+        else {
 
             $vars = ['formMessage' => $formMessage];
             return $this->render('forms/affiche_form_envoyer_message.html.twig', $vars);

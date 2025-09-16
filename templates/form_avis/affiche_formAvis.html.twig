@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FormAvisController!{% endblock %}
+
+{% block body %}
+{{ form_start (formAvis) }}
+{{ form_widget (formAvis) }}
+<input type="submit" value="envoyer">
+{{ form_end (formAvis)}}
+{% endblock %}
+
