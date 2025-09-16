@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' % }
+
+{ % block title %}Hello FormsController!{% endblock % }
+
+{ % block body % }
+{{ form_start (formMessage) }}
+{{ form_widget (formMessage) }}
+<input type="submit" value="envoyer">
+{{ form_end (formMessage)}}
+{ % endblock % }

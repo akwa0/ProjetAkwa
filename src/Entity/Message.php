@@ -21,7 +21,7 @@ class Message
     private ?\DateTime $dateEnvoie = null;
 
     #[ORM\Column]
-    private ?bool $Etat = null;
+    private ?bool $etat = null;
 
     public function getId(): ?int
     {
@@ -54,12 +54,12 @@ class Message
 
     public function isEtat(): ?bool
     {
-        return $this->Etat;
+        return $this->etat;
     }
 
-    public function setEtat(bool $Etat): static
+    public function setEtat(bool $etat): static
     {
-        $this->Etat = $Etat;
+        $this->etat = $etat;
 
         return $this;
     }
