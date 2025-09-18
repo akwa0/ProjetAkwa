@@ -23,6 +23,9 @@ class Photo
     #[ORM\Column(length: 255)]
     private ?string $auteur = null;
 
+    #[ORM\ManyToOne(inversedBy: 'photos')]
+    private ?Utilisateur $photoPoster = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Photo
     public function setAuteur(string $auteur): static
     {
         $this->auteur = $auteur;
+
+        return $this;
+    }
+
+    public function getPhotoPoster(): ?Utilisateur
+    {
+        return $this->photoPoster;
+    }
+
+    public function setPhotoPoster(?Utilisateur $photoPoster): static
+    {
+        $this->photoPoster = $photoPoster;
 
         return $this;
     }

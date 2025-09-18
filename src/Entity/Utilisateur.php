@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -39,6 +41,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $dateNaissance = null;
+
+    /**
+     * @var Collection<int, photo>
+     */
+    #[ORM\OneToMany(targetEntity: photo::class, mappedBy: 'photoPoster')]
+    private Collection $photos;
+
+    public function __construct()
+    {
+        $this->photos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -141,6 +154,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateNaissance(?\DateTime $dateNaissance): static
     {
         $this->dateNaissance = $dateNaissance; 
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, photo>
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function addPhoto(photo $photo): static
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos->add($photo);
+            $photo->setPhotoPoster($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhoto(photo $photo): static
+    {
+        if ($this->photos->removeElement($photo)) {
+            // set the owning side to null (unless already changed)
+            if ($photo->getPhotoPoster() === $this) {
+                $photo->setPhotoPoster(null);
+            }
+        }
 
         return $this;
     }

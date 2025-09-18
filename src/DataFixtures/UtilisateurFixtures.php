@@ -31,7 +31,9 @@ class UtilisateurFixtures extends Fixture
             $utilisateur ->setRoles(['ROLE_USER']);
             $manager->persist($utilisateur);
 
-            $this->addReference("utilisateur".$i,$utilisateur); 
+            $this ->addReference("utilisateur".$i,$utilisateur);
+
+            
         }
         for ($i = 0; $i<=5; $i++){
             $utilisateur = new Utilisateur();
@@ -43,6 +45,7 @@ class UtilisateurFixtures extends Fixture
             $manager->persist($utilisateur);
 
             $this->addReference("admin".$i,$utilisateur); 
+        
         }
         
 
