@@ -43,9 +43,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTime $dateNaissance = null;
 
     /**
-     * @var Collection<int, photo>
+     * @var Collection<int, Photo>
      */
-    #[ORM\OneToMany(targetEntity: photo::class, mappedBy: 'photoPoster')]
+    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'photoPoster')]
     private Collection $photos;
 
     public function __construct()
@@ -159,14 +159,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, photo>
+     * @return Collection<int, Photo>
      */
     public function getPhotos(): Collection
     {
         return $this->photos;
     }
 
-    public function addPhoto(photo $photo): static
+    public function addPhoto(Photo $photo): static
     {
         if (!$this->photos->contains($photo)) {
             $this->photos->add($photo);
@@ -176,7 +176,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removePhoto(photo $photo): static
+    public function removePhoto(Photo $photo): static
     {
         if ($this->photos->removeElement($photo)) {
             // set the owning side to null (unless already changed)

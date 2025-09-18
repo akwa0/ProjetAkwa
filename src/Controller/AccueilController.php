@@ -27,7 +27,7 @@ final class AccueilController extends AbstractController
 
 
     #[Route('/accueil', name: 'app_accueil')]
-    public function testModele (EntityManagerInterface $em){
+    public function index (EntityManagerInterface $em){
         //on va obtenir ds entités de la BD 
         //1.Obtenir le repode l'entité
         $rep = $em->getRepository(Photo::class);
@@ -36,7 +36,7 @@ final class AccueilController extends AbstractController
         $var =[
             'photos'=>$photos,
         ];
-        return $this->render('accueil/test_modele.html.twig', $var);
+        return $this->render('accueil/index.html.twig', $var);
     }
 
 

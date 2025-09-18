@@ -40,4 +40,9 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form,
         ]);
     }
+
+    #[Route('/register/choix/profil', name: 'app_choix_profil_enregistrement')]
+    public function registerChoixProfil (){
+        return $this->render('registration/choix_profil.html.twig');
+    }
 }
