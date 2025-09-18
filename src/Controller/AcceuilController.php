@@ -12,7 +12,7 @@ use App\Entity\Photo;
 
 final class AcceuilController extends AbstractController
 {
-    #[Route('acceuil/index.html.twig')]
+    #[Route('acceuil/index.html.twig', name: 'app_accueil')]
     public function testModele (EntityManagerInterface $em){
         //on va obtenir ds entités de la BD 
         //1.Obtenir le repode l'entité

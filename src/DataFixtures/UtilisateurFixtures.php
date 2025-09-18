@@ -23,10 +23,12 @@ class UtilisateurFixtures extends Fixture
             $utilisateur = new Utilisateur();
             //$utilisateur->setNom('nom'.$i);
             //$utilisateur->setPrenom('prenom'.$i);
-            $utilisateur->setEmail('email'.$i.'@gmail.com');
+            $utilisateur->setEmail('user'.$i.'@gmail.com');
             $utilisateur->setPassword($this->hasher->hashPassword($utilisateur,'password'.$i));
             //$utilisateur ->setRoles();
             $manager->persist($utilisateur);
+
+            $this->addReference("utilisateur".$i,$utilisateur); 
         }
         
 
