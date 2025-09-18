@@ -48,6 +48,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'photoPoster')]
     private Collection $photos;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $experience = null;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -184,6 +187,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $photo->setPhotoPoster(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getExperience(): ?int
+    {
+        return $this->experience;
+    }
+
+    public function setExperience(?int $experience): static
+    {
+        $this->experience = $experience;
 
         return $this;
     }
