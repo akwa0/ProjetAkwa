@@ -23,6 +23,9 @@ class Message
     #[ORM\Column]
     private ?bool $etat = null;
 
+    #[ORM\ManyToOne(inversedBy: 'messages')]
+    private ?Utilisateur $Utilisateurs = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Message
     public function setEtat(bool $etat): static
     {
         $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getUtilisateurs(): ?Utilisateur
+    {
+        return $this->Utilisateurs;
+    }
+
+    public function setUtilisateurs(?Utilisateur $Utilisateurs): static
+    {
+        $this->Utilisateurs = $Utilisateurs;
 
         return $this;
     }

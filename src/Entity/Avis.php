@@ -26,6 +26,9 @@ class Avis
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $commentaire = null;
 
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    private ?Utilisateur $utilisateurs = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Avis
     public function setCommentaire(?string $commentaire): static
     {
         $this->commentaire = $commentaire;
+
+        return $this;
+    }
+
+    public function getUtilisateurs(): ?Utilisateur
+    {
+        return $this->utilisateurs;
+    }
+
+    public function setUtilisateurs(?Utilisateur $utilisateurs): static
+    {
+        $this->utilisateurs = $utilisateurs;
 
         return $this;
     }
