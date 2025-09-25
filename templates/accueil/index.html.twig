@@ -3,11 +3,31 @@
 {% block title %}Hello AccueilController!{% endblock %}
 
 {% block body %}
-<h1>Accueil</h1>
-<button><a href="{{ path('app_choix_profil_enregistrement') }}">S'inscrire</a></button>
-{% if not app.user %}
-<button><a href="{{ path('app_login') }}">Se connecter</a></button>
-{% else %}
-<button><a href="{{ path('app_compte_pro') }}">Mon compte</a></button>
-{% endif %}
+<link rel="stylesheet" href="{{ asset('accueil/style.css') }}">
+<script src="{{ asset('accueil/script.js') }}"></script>
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="./accueil/style.css">
+    </head>
+    <body>
+
+    <img id="logo" src="{{ asset('/image/602bd0a9e4a850907117386c1ed18e2e.jpg') }}" alt="Logo">
+
+
+    <div class="buttons" id="btnContainer">
+        <button class="btn-inscrire"><a href="{{ path('app_choix_profil_enregistrement') }}">S'inscrire</a></button>
+        
+<button class="btn-connecter"><a href="{{ path('app_login') }}">Se connecter</a></button>
+
+        
+    </div>
+
+    
+
+
 {% endblock %}
