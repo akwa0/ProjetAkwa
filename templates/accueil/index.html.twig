@@ -4,6 +4,10 @@
 
 {% block body %}
 <h1>Accueil</h1>
-<button><a href="{{ path('app_choix_profil_enregistrement')}}">S'inscrire</a></button>
-<button><a href="{{ path('app_login')}}">Se connecter</a></button>
+<button><a href="{{ path('app_choix_profil_enregistrement') }}">S'inscrire</a></button>
+{% if not app.user %}
+<button><a href="{{ path('app_login') }}">Se connecter</a></button>
+{% else %}
+<button><a href="{{ path('app_compte_pro') }}">Mon compte</a></button>
+{% endif %}
 {% endblock %}

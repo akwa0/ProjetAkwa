@@ -3,6 +3,9 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
+    <div class="actions" style="margin-top: 1rem;">
+        <button><a class="btn btn-secondary" href="{{ path('app_accueil') }}">Aller à l'accueil</a></button>
+    </div>
     <h1>Register</h1>
 
     {{ form_errors(registrationForm) }}
@@ -21,4 +24,6 @@
 
         <button type="submit" class="btn">Register</button>
     {{ form_end(registrationForm, { render_rest:false}) }}
+
+   
 {% endblock %}

@@ -17,9 +17,13 @@
 
         <header>
 
-        <h5>{%if app.user%} {{app.user.email}} {%endif%}</h5>
-        
-        <a href="{{ path('app_logout') }}">Se déconnecter</a>
+        <h5>{% if app.user %} {{ app.user.email }} {% endif %}</h5>
+        {% if app.user %}
+            <form action="{{ path('app_logout') }}" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                <button type="submit" class="btn btn-link p-0 align-baseline">Se déconnecter</button>
+            </form>
+        {% endif %}
         
         
         

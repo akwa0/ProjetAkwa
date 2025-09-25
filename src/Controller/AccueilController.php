@@ -26,6 +26,7 @@ final class AccueilController extends AbstractController
     // }
 
 
+    #[Route('/', name: 'app_home')]
     #[Route('/accueil', name: 'app_accueil')]
     public function index (EntityManagerInterface $em){
         //on va obtenir ds entités de la BD 

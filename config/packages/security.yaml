@@ -25,6 +25,10 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 target: app_accueil
+                invalidate_session: true
+                enable_csrf: true
+                csrf_token_manager: security.csrf.token_manager
+                csrf_token_id: logout
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

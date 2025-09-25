@@ -11,9 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class RegistrationController extends AbstractController
 {
+    use TargetPathTrait;
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
@@ -37,6 +39,10 @@ class RegistrationController extends AbstractController
 
             // do anything else you need here, like send an email
 
+            // Après inscription, rester sur le compte correspondant et proposer un bouton Accueil.
+            // On force la redirection post-auth vers la page compte (pro ou client) selon le type.
+            $routeAfterLogin = ($type === 'pro') ? 'app_compte_pro' : 'app_compte_client';
+            $this->saveTargetPath($request->getSession(), 'main', $this->generateUrl($routeAfterLogin));
             return $security->login($user, 'form_login', 'main');
         }
 

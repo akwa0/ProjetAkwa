@@ -1,7 +1,16 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <a href="{{ path ('app_register', {'type' : 'pro'}) }}">Pro</a>
-    <a href="{{ path ('app_register', {'type' : 'client'}) }}">Client</a>
+    <div class="actions" style="margin-top: 1rem;">
+        <button><a class="btn btn-secondary" href="{{ path('app_accueil') }}">Aller à l'accueil</a></button>
+    </div>
+    <br>
+
+
+
+    <button><a href="{{ path ('app_register', {'type' : 'pro'}) }}">Pro</a></button>
+    <button><a href="{{ path ('app_register', {'type' : 'client'}) }}">Client</a></button>
+
+    
 
 {% endblock %}
