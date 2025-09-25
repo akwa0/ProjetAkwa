@@ -22,8 +22,11 @@
             
         {% endif %}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm, { render_rest:false}) }}
+        {# CSRF token explicit to avoid auto-rendering other fields #}
+        {{ form_row(registrationForm._token) }}
 
-   
+        <button type="submit" class="btn">Register</button>
+    {{ form_end(registrationForm, { render_rest: false }) }}
+
+    
 {% endblock %}
