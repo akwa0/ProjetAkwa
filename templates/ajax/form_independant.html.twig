@@ -3,44 +3,67 @@
 {% block title %}Hello AjaxController!{% endblock %}
 
 {% block body %}
+<link rel="stylesheet" href="{{ asset('messagerie/style.css') }}">
+
 {#Dans cette vue on doit avoir le formulaire et le traitement Ajax#}
+
 <form id="form_nom">
 
-<input type="texte" name="nom" id ="text_nom">
-<input type="submit">
-
 </form>
-<div id="div_contenu">reponse</div>
 
 
+<div id="div_contenu"></div>
+<div id="messages"></div>
 
+    <input type="text" id="messageInput" placeholder="Écrire un message">
+    <button onclick="sendMessage()">Submit</button>
 
 
 <script>  
-const textNom= document.querySelector("#text_nom");
-textNom.addEventListener("input",function(event){
-    const valeur = event.target.value;
-    const formNom=document.querySelector("#form_nom");
-    //on créer un un formdata a partir d'un element form du dom
-    const formData = new FormData(formNom);
-    //on a la valeur: on appel le serveur
-    axios({
-        url:"/ajax/form/independant/traitement",
-        method:"POST",
-        data:formData,
-        header:{
-            "Content-Type":"multipart/form-data"
-        }
-    }).then(
-        function(response){
-            const divContenu=document.querySelector("#div_contenu");
-            divContenu.innerHTML=response.data.message ;
+// const textNom= document.querySelector("#text_nom");
+// textNom.addEventListener("input",function(event){
+//     const valeur = event.target.value;
+//     const formNom=document.querySelector("#form_nom");
+//     //on créer un un formdata a partir d'un element form du dom
+//     const formData = new FormData(formNom);
+//     //on a la valeur: on appel le serveur
+    // axios({
+    //     url:"/ajax/form/independant/traitement",
+    //     method:"POST",
+    //     data:formData,
+    //     header:{
+    //         "Content-Type":"multipart/form-data"
+    // }
+    //   }).then(
+    //     function(response){
+    //         const divContenu=document.querySelector("#div_contenu");
+    //         divContenu.innerHTML=response.data.message ;
             
             
-        }
-    )
+        // }
+    // )
 
     //console.log(valeur);
-});
+// });
+
+function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (message !== "") {
+                const messagesDiv = document.getElementById('div_contenu');
+                
+                // Créer un nouvel élément <p> pour le message
+                const messageElement = document.createElement('p');
+                messageElement.textContent = message;
+                
+                // Ajouter le message à la div
+                messagesDiv.appendChild(messageElement);
+
+                // Réinitialiser le champ input
+                input.value = "";
+            }
+        }
+
 </script>
 {% endblock %}

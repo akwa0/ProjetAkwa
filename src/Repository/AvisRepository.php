@@ -16,6 +16,13 @@ class AvisRepository extends ServiceEntityRepository
         parent::__construct($registry, Avis::class);
     }
 
+    // public function findNombreEtoile(int $nombreEtoile,ManagerRegistry $doctrine){
+        // $this->registry->getManager();
+        // $query= $em->createQuery("SELECT Avis FROM App\Entity\Avis WHERE etoile = :nombreEtoile");
+        
+        
+        
+
     //    /**
     //     * @return Avis[] Returns an array of Avis objects
     //     */

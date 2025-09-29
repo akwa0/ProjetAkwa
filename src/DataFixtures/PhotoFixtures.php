@@ -39,4 +39,5 @@ class PhotoFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     
     }
+    
 }

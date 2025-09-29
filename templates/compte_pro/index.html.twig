@@ -1,13 +1,101 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CompteProController!{% endblock %}
+{% block title %}Votre compte pro{% endblock %}
 
 {% block body %}
+<link rel="stylesheet" href="{{ asset('profils pro/style.css') }}">
+<script src="{{ asset('profils pro/script.js') }}"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Compte pro</title>
+    <link rel="stylesheet" href="./accueil/style.css">
+    </head>
+    
+    <h1>Votre compte pro</h1>
+
+
+    <form method="post" accept-charset="UTF-8">
+    <textarea name="message" id="message" cols="30" rows="10" placeholder=" Votre Description"></textarea>
+    <br>
+    <div id="main">
+    <label for="image"class="custom-label">votre photo de profil</label>
+    <br>
+    <input id="image" type="file" accept="image/*">
+    </div>
+
+    <button type="submit"><a href="{{ path('app_messagerie') }}" class="btn">messagerie</a></button>
+    <button type="submit">recherche</button>
+    <button type="submit">parametre</button>
+    
+
+    
+
+    
+</form>
+
+    
+    
+
+    
+<div class="add_photo">
+    <form action="">
+    <br>
+    <label for="image">Ajouter une photo</label>
+    <br>
+    <input type="file" name="image">
+
+    </form>
+</div>
+
+    
+        
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
     .actions { margin-top: 1rem; }
 </style>
 
+<script>
+    const input = document.getElementById('image');
+    const mainDiv = document.getElementById('main');
+    const label = mainDiv.querySelector('.custom-label');
 
+    input.addEventListener('change', function() {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+        // Supprimer le label pour afficher la photo
+        if(label) label.style.display = 'none';
+
+        // Créer ou mettre à jour l'image dans le rond
+        let img = mainDiv.querySelector('img');
+        if (!img) {
+            img = document.createElement('img');
+            mainDiv.appendChild(img);
+        }
+        img.src = e.target.result;
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+    });
+</script>
+
+
+    <body> 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+    
+
+

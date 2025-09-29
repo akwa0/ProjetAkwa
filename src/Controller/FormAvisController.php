@@ -52,4 +52,10 @@ final class FormAvisController extends AbstractController
         $vars = ['avis' => $arrayAvis];
         return $this->render('form_avis/afficher_avis.html.twig', $vars);
     }
+
+   // #[Route('/formAvis/afficheravis', name: 'app_form_afficher_avis')]
+   // public function afficherAvis(EntityManagerInterface $em):Response{
+       // $em =$doctine->getRepository(Avis::class)->findNumberEtoile("5");
+       // $vars = ['avis' => $avis];
+       //return $this->render('form_avis/afficher_avis.html.twig', $vars);
 }
