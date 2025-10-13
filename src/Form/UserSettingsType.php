@@ -20,7 +20,10 @@ class UserSettingsType extends AbstractType
             ->add('nom', TextType::class)
             ->add('email', EmailType::class)
             ->add('description', TextareaType::class)
-            ->add('profilImage', FileType::class)
+            ->add('profilImage', FileType::class,[
+                'mapped'=>false,
+                'required'=>false,
+            ])
             ->add('telephone', NumberType::class)
             ->add('adresse', TextType::class)
             ->add('codePostal', TextType::class)

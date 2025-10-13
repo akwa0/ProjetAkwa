@@ -17,6 +17,12 @@
 {{ form_row(form.email) }}
 {{ form_row(form.description) }}
 {{ form_row(form.profilImage) }}
+{% if app.user.profilImage %}
+    <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" width="150" />
+{% else %}
+    <p>Aucune photo de profil</p>
+{% endif %}
+
 {{ form_row(form.telephone) }}
 {{ form_row(form.adresse) }}
 {{ form_row(form.codePostal) }}
@@ -24,7 +30,7 @@
 {{ form_row(form.pays) }}
 {{ form_row(form.style) }}
 {{ form_row(form.experience) }}
-<button type="submit" class"btn btn-primary">Enregistrer</button>
+<button type="submit" class="btn btn-primary">Enregistrer</button>
 {{ form_end(form) }}
 
 
