@@ -45,12 +45,15 @@ final class ParametreController extends AbstractController
             }
             $em->flush();
             $this->addFlash('success', 'Paramètres modifiés.');
-            return $this->redirectToRoute('app_parametre');
+            return $this->redirectToRoute('app_compte_pro');
         }
         return $this->render('parametre/edit.html.twig', [
             'form' => $form->createView(),
         ]);
+
+       
     }
+   
 
 }
 
