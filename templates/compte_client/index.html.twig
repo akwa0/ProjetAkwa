@@ -3,23 +3,48 @@
 {% block title %}Hello CompteClientController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    .actions { margin-top: 1rem; }
-</style>
+<link rel="stylesheet" href="{{ asset('profils pro/style.css') }}">
+<script src="{{ asset('profils pro/script.js') }}"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Compte client</title>
+    <link rel="stylesheet" href="./accueil/style.css">
+    </head>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Votre compte client</h1>
+<body>
+   <div class="profile-info">
+    <p><strong>Nom :</strong> {{ user.nom }}</p>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/xampp/htdocs/ProjetAkwa/src/Controller/CompteClientController.php</code></li>
-        <li>Your template at <code>C:/xampp/htdocs/ProjetAkwa/templates/compte_client/index.html.twig</code></li>
-    </ul>
+  
 
-    <div class="actions">
-        <a class="btn btn-primary" href="{{ path('app_accueil') }}">Aller à l'accueil</a>
-    </div>
+    {% if user.profilImage %}
+        <img src="{{ asset('uploads/' ~ user.profilImage) }}" alt="Photo de profil" width="150" />
+    {% else %}
+        <p>Aucune photo de profil</p>
+    {% endif %}
 </div>
+
+
+    <button type="submit"><a href="{{ path('app_messagerie') }}" class="btn">messagerie</a></button>
+    <button type="submit">recherche</button>
+    <button type="submit"><a href="{{ path('app_parametre_client') }}" class="btn">parametre</a></button>
+    
+
+    
+
+    
+
+
+
+    
+
+    
+        
+
+
+
+
+
+    <body> 
 {% endblock %}

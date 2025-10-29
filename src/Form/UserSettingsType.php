@@ -19,11 +19,16 @@ class UserSettingsType extends AbstractType
         $builder
             ->add('nom', TextType::class)
             ->add('email', EmailType::class)
-            ->add('description', TextareaType::class)
             ->add('profilImage', FileType::class,[
                 'mapped'=>false,
                 'required'=>false,
-            ])
+              ]);
+
+
+        if ($options['compte_pro']) {
+            $builder
+            ->add('description', TextareaType::class)
+            
             ->add('telephone', NumberType::class)
             ->add('adresse', TextType::class)
             ->add('codePostal', TextType::class)
@@ -31,9 +36,7 @@ class UserSettingsType extends AbstractType
             ->add('pays', TextType::class)
             ->add('style', TextType::class)
             ->add('experience', NumberType::class);
-            
-
-
+            }
 
         
     }
@@ -42,6 +45,7 @@ class UserSettingsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Utilisateur::class,
+            'compte_pro' => false, 
             // Configure your form options here
         ]);
     }

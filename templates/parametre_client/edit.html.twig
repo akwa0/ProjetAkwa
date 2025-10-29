@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} ParametreClient{% endblock %}
+
+{% block body %}
+ <h1>ParametreClient</h1>
+
+{{ form_start(form) }}
+{{ form_row(form.nom) }}
+{{ form_row(form.email) }}
+{{ form_row(form.profilImage) }}
+{% if app.user.profilImage %}
+    <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" width="150" />
+{% else %}
+    <p>Aucune photo de profil</p>
+{% endif %}
+
+<button type="submit" class="btn btn-primary">Enregistrer</button>
+{{ form_end(form) }}
+{% endblock %}
