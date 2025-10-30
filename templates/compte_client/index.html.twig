@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./accueil/style.css">
     </head>
 
-    <h1>Votre compte client</h1>
+    <h1>Bienvenue sur votre compte client {{ user.nom }}</h1>
 <body>
    <div class="profile-info">
     <p><strong>Nom :</strong> {{ user.nom }}</p>
@@ -29,6 +29,7 @@
     <button type="submit"><a href="{{ path('app_messagerie') }}" class="btn">messagerie</a></button>
     <button type="submit">recherche</button>
     <button type="submit"><a href="{{ path('app_parametre_client') }}" class="btn">parametre</a></button>
+    <button type="submit"><a href="" class="btn">Publication Liké</a></button>
     
 
     
