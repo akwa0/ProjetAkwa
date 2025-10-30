@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Photo;
+use App\Form\PhotoType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,7 +16,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 final class ContenuPhotoController extends AbstractController
 {
     #[Route('/contenu/photo', name: 'app_contenu_photo')]
-    public function add(Request $request, EntityManagerInterface $em): Response
+    public function addPhoto(Request $request, EntityManagerInterface $em): Response
     {
       /** @var Utilisateur|null $user */
       $user = $this->getUser();
@@ -22,11 +24,14 @@ final class ContenuPhotoController extends AbstractController
           // Not logged in or unexpected user type
           return $this->redirectToRoute('app_login');
       }
-      $form = $this->createForm(UserSettingsType::class, $user,['compte_pro'=>'true']);
+      $photo = new Photo();
+      $form = $this->createForm(PhotoType::class, $photo);
       $form->handleRequest($request);
+
+    
       
       if ($form->isSubmitted() && $form->isValid()) {
-          $imageFile = $form->get('newphoto')->getData();
+          $imageFile = $form->get('photo')->getData();
 
           if ($imageFile) {
               $newFilename = uniqid().'.'.$imageFile->guessExtension();
@@ -36,24 +41,36 @@ final class ContenuPhotoController extends AbstractController
                       $this->getParameter('uploads_directory'),
                       $newFilename
                   );
-              } catch (FileException) {
+              } catch (FileException $e) {
+                $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');
+                return $this->redirectToRoute('app_contenu_photo');
+
                   
               }
-              $photo = new Photo();
+             
               $photo->setFilename($newFilename);
               $photo->setPhotoPoster($user);
-              $user->addPhoto($photo);
+              $photo->setDateCreation(new \DateTime());
+              $photo->setDescription($form->get('description')->getData()); 
+              $photo->setAuteur($user->getNom());
+             
+              
               $em->persist($photo);
-      
-              // Met à jour le nom de fichier dans l'entité
-              $user->setNewphoto($newFilename);
-          }
-          $em->flush();
-          $this->addFlash('success', 'Photo ajoutée.');
+              $em->flush();
+
+              $this->addFlash('success', 'Photo ajoutée.');
           return $this->redirectToRoute('app_compte_pro');
+      
+              
+            }
+          
+          
       }
       return $this->render('contenu_photo/edit.html.twig', [
         'form' => $form->createView(),
     ]);
     
 }
+
+}
+

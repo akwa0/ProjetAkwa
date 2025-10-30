@@ -26,6 +26,9 @@ class Photo
     #[ORM\ManyToOne(inversedBy: 'photos')]
     private ?Utilisateur $photoPoster = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $filename = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,19 +80,19 @@ class Photo
         $this->photoPoster = $photoPoster;
 
         return $this;
+     }
+
+    public function getFilename(): ?string
+    {
+        return $this->filename;
     }
-    #[ORM\Column(length: 255)]
-private ?string $filename = null;
 
-public function getFilename(): ?string
-{
-    return $this->filename;
-}
+    public function setFilename(?string $filename): static
+    {
+        $this->filename = $filename;
 
-public function setFilename(?string $filename): static
-{
-    $this->filename = $filename;
-    return $this;
-}
+        return $this;
+    }
+
 
 }
