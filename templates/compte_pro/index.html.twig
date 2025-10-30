@@ -12,16 +12,16 @@
     <link rel="stylesheet" href="./accueil/style.css">
     </head>
     
-    <h1>Bienvenue sur votre compte pro {{ user.nom }}</h1>
+    <h1>Bienvenue sur votre compte pro {{ app.user.nom }}</h1>
 
 <div class="profile-info">
-    <p><strong>Nom :</strong> {{ user.nom }}</p>
-    <p><strong>Description :</strong> {{ user.description }}</p>
-    <p><strong>Style :</strong> {{ user.style }}</p>
-    <p><strong>Expérience :</strong> {{ user.experience }} an(s)</p>
+    <p><strong>Nom :</strong> {{ app.user.nom }}</p>
+    <p><strong>Description :</strong> {{ app.user.description }}</p>
+    <p><strong>Style :</strong> {{ app.user.style }}</p>
+    <p><strong>Expérience :</strong> {{ app.user.experience }} an(s)</p>
 
-    {% if user.profilImage %}
-        <img src="{{ asset('uploads/' ~ user.profilImage) }}" alt="Photo de profil" width="150" />
+    {% if app.user.profilImage %}
+        <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" width="150" />
     {% else %}
         <p>Aucune photo de profil</p>
     {% endif %}
@@ -40,6 +40,7 @@
     <button type="submit"><a href="{{ path('app_messagerie') }}" class="btn">messagerie</a></button>
     <button type="submit">recherche</button>
     <button type="submit"><a href="{{ path('app_parametre') }}" class="btn">parametre</a></button>
+    <button type="button" class="btn-primary"><a href="{{ path('app_contenu_photo') }}" class="btn">Ajouter</a></button>
     
 
     

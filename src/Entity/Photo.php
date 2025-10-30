@@ -78,4 +78,18 @@ class Photo
 
         return $this;
     }
+    #[ORM\Column(length: 255)]
+private ?string $filename = null;
+
+public function getFilename(): ?string
+{
+    return $this->filename;
+}
+
+public function setFilename(?string $filename): static
+{
+    $this->filename = $filename;
+    return $this;
+}
+
 }
