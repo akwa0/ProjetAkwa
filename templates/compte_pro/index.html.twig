@@ -43,25 +43,35 @@
     <button type="button" class="btn-primary"><a href="{{ path('app_contenu_photo') }}" class="btn">Ajouter</a></button>
     
     <div class="containerPhoto">
+          {% set photos=app.user.photos | slice(0, 3) %}
         <div class="Photo">
-            {% for photo in app.user.photos %}
-            <img src="{{ asset('uploads/' ~ photo.filename) }}" alt="Photo" width="150" />
-            {% endfor %}
+            {% if photos | length > 0 %}
+            <img src="{{ asset('uploads/' ~ photos[0].filename) }}" alt="Photo1" width="150" />
+            {% else %}
+            <p>Aucune photo</p>
+            {% endif %}           
         </div>
     
         <div class="Photo">
-         {% for photo in app.user.photos %}
-            <img src="{{ asset('uploads/' ~ photo.filename) }}" alt="Photo" width="150" />
-            {% endfor %}
+            {% if photos | length > 1 %}
+            <img src="{{ asset('uploads/' ~ photos[1].filename) }}" alt="Photo2" width="150" />
+            {% else %}
+            <p>Aucune photo</p>
+            {% endif %}
+            
             
         </div>
         <div class="Photo">
-             {% for photo in app.user.photos %}
-            <img src="{{ asset('uploads/' ~ photo.filename) }}" alt="Photo" width="150" />
-            {% endfor %}
+            {% if photos | length > 2 %}
+            <img src="{{ asset('uploads/' ~ photos[2].filename) }}" alt="Photo3" width="150" />
+            {% else %}
+            <p>Aucune photo</p>
+            {% endif %}
+           
         </div>
 
     </div>
+    
 
     
 
@@ -79,7 +89,8 @@
 
 
     <body> 
-{% endblock %}
+    {% endblock %}
+
 
 
 
