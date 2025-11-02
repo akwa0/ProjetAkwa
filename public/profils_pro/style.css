@@ -1,9 +1,9 @@
 body{
-    background-color: #ece7f0;
+    background-color: #e1d8e9;
 
 }
 h1{
-    color: rgb(10, 2, 37);
+    color: rgb(0, 0, 0);
 }
 
 #image{
@@ -41,6 +41,22 @@ h1{
 }
 
 
+.containerPhoto{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    background-color: rgb(189, 156, 225);
+    padding: 1rem;
+}
+.Photo{
+    width:   17rem;
+    height: 5rem;
+    padding: 20px;
+    background-color: white;
+ 
+}
+    
 
 
 
