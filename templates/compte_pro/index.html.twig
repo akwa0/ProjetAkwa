@@ -44,13 +44,21 @@
     
     <div class="containerPhoto">
         <div class="Photo">
+            {% for photo in app.user.photos %}
+            <img src="{{ asset('uploads/' ~ photo.filename) }}" alt="Photo" width="150" />
+            {% endfor %}
+        </div>
+    
+        <div class="Photo">
+         {% for photo in app.user.photos %}
+            <img src="{{ asset('uploads/' ~ photo.filename) }}" alt="Photo" width="150" />
+            {% endfor %}
             
         </div>
         <div class="Photo">
-            
-        </div>
-        <div class="Photo">
-            
+             {% for photo in app.user.photos %}
+            <img src="{{ asset('uploads/' ~ photo.filename) }}" alt="Photo" width="150" />
+            {% endfor %}
         </div>
 
     </div>
