@@ -11,15 +11,15 @@
     <link rel="stylesheet" href="./accueil/style.css">
     </head>
 
-    <h1>Bienvenue sur votre compte client {{ user.nom }}</h1>
+    <h1>Bienvenue sur votre compte client {{ app.user.nom }}</h1>
 <body>
    <div class="profile-info">
-    <p><strong>Nom :</strong> {{ user.nom }}</p>
+    <p><strong>Nom :</strong> {{ app.user.nom }}</p>
 
   
 
-    {% if user.profilImage %}
-        <img src="{{ asset('uploads/' ~ user.profilImage) }}" alt="Photo de profil" width="150" />
+    {% if app.user.profilImage %}
+        <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" width="150" />
     {% else %}
         <p>Aucune photo de profil</p>
     {% endif %}

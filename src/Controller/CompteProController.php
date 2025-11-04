@@ -22,10 +22,7 @@ final class CompteProController extends AbstractController
         }
 
 
-        return $this->render('compte_pro/index.html.twig', [
-            'user' => $user,
-        
-        ]);
+        return $this->render('compte_pro/index.html.twig');
       
     }
 }

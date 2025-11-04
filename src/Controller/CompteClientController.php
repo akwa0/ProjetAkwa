@@ -21,8 +21,6 @@ final class CompteClientController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('compte_client/index.html.twig', [
-            'user' => $user,
-        ]);
+        return $this->render('compte_client/index.html.twig');
     }
 }
