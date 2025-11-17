@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes artistes favoris{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>Mes artistes favoris ⭐</h1>
+            <p class="lead text-muted">Total : {{ totalFavoris }} artiste(s)</p>
+        </div>
+    </div>
+
+    {% if favoris | length > 0 %}
+        <div class="row">
+            {% for favori in favoris %}
+                {% set artiste = favori.artiste %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                {% if artiste.profilImage %}
+                                    <img src="{{ asset('uploads/' ~ artiste.profilImage) }}"
+                                         alt="Photo de profil de {{ artiste.nom }}"
+                                         class="img-fluid rounded-start"
+                                         style="width: 100%; height: 250px; object-fit: cover;">
+                                {% else %}
+                                    <div class="bg-light d-flex align-items-center justify-content-center"
+                                         style="width: 100%; height: 250px;">
+                                        <span class="text-muted">Pas de photo</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ artiste.nom }}</h5>
+
+                                    {% if artiste.description %}
+                                        <p class="card-text text-muted small">{{ artiste.description | slice(0, 100) }}{% if artiste.description | length > 100 %}...{% endif %}</p>
+                                    {% endif %}
+
+                                    <div class="mb-3">
+                                        {% if artiste.style %}
+                                            <span class="badge bg-info">{{ artiste.style }}</span>
+                                        {% endif %}
+                                        {% if artiste.experience %}
+                                            <span class="badge bg-secondary">{{ artiste.experience }} ans d'exp</span>
+                                        {% endif %}
+                                        {% if artiste.ville %}
+                                            <span class="badge bg-light text-dark">{{ artiste.ville }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Date d'ajout -->
+                                    <small class="text-muted d-block mb-3">
+                                        Ajouté le {{ favori.dateAjout | date('d/m/Y à H:i') }}
+                                    </small>
+
+                                    <!-- Boutons d'action -->
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ path('app_profil_public', {'id': artiste.id}) }}" class="btn btn-sm btn-outline-primary">
+                                            Voir le profil
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger remove-favoris-btn"
+                                                data-artiste-id="{{ artiste.id }}"
+                                                data-favori-id="{{ favori.id }}">
+                                            Retirer des favoris
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="alert alert-info text-center" role="alert">
+                    <h4 class="alert-heading">Aucun artiste favori</h4>
+                    <p>Vous n'avez encore ajouté aucun artiste à vos favoris.</p>
+                    <hr>
+                    <p class="mb-0">
+                        <a href="{{ path('app_search_professionals') }}" class="btn btn-primary">
+                            Découvrez des artistes
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Retour au compte client -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <a href="{{ path('app_compte_client') }}" class="btn btn-secondary">
+                ← Retour au compte
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const removeBtns = document.querySelectorAll('.remove-favoris-btn');
+
+    removeBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const artisteId = btn.dataset.artisteId;
+
+            if (confirm('Êtes-vous sûr de vouloir retirer cet artiste de vos favoris ?')) {
+                fetch(`{{ path('app_favoris_toggle_artiste', {'id': 0}) }}`.replace('0', artisteId), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.favoris) {
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

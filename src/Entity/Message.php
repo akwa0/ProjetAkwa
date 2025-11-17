@@ -14,17 +14,22 @@ class Message
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $dateEnvoie = null;
 
     #[ORM\Column]
-    private ?bool $etat = null;
+    private bool $lu = false;
 
-    #[ORM\ManyToOne(inversedBy: 'messages')]
-    private ?Utilisateur $Utilisateurs = null;
+    #[ORM\ManyToOne(inversedBy: 'messagesEnvoyes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $emetteur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'messagesRecus')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $destinataire = null;
 
     public function getId(): ?int
     {
@@ -48,33 +53,45 @@ class Message
         return $this->dateEnvoie;
     }
 
-    public function setDateEnvoie(?\DateTime $dateEnvoie): static
+    public function setDateEnvoie(\DateTime $dateEnvoie): static
     {
         $this->dateEnvoie = $dateEnvoie;
 
         return $this;
     }
 
-    public function isEtat(): ?bool
+    public function isLu(): bool
     {
-        return $this->etat;
+        return $this->lu;
     }
 
-    public function setEtat(bool $etat): static
+    public function setLu(bool $lu): static
     {
-        $this->etat = $etat;
+        $this->lu = $lu;
 
         return $this;
     }
 
-    public function getUtilisateurs(): ?Utilisateur
+    public function getEmetteur(): ?Utilisateur
     {
-        return $this->Utilisateurs;
+        return $this->emetteur;
     }
 
-    public function setUtilisateurs(?Utilisateur $Utilisateurs): static
+    public function setEmetteur(?Utilisateur $emetteur): static
     {
-        $this->Utilisateurs = $Utilisateurs;
+        $this->emetteur = $emetteur;
+
+        return $this;
+    }
+
+    public function getDestinataire(): ?Utilisateur
+    {
+        return $this->destinataire;
+    }
+
+    public function setDestinataire(?Utilisateur $destinataire): static
+    {
+        $this->destinataire = $destinataire;
 
         return $this;
     }

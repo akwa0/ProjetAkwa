@@ -31,21 +31,68 @@
 
     <button type="submit"><a href="{{ path('app_parametre_client') }}" class="btn">parametre</a></button>
     <button type="submit"><a href="{{ path('app_publication_likes') }}" class="btn">Publication Liké</a></button>
-    
 
-    
+<!-- Mes Artistes Favoris -->
+<hr class="my-5">
+<div class="favoris-section">
+    <h2>Mes Artistes Favoris ⭐</h2>
 
-    
+    {% if app.user.favorisGives | length > 0 %}
+        <div class="row">
+            {% for favori in app.user.favorisGives %}
+                {% set artiste = favori.artiste %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <!-- Photo de profil -->
+                        {% if artiste.profilImage %}
+                            <img src="{{ asset('uploads/' ~ artiste.profilImage) }}"
+                                 alt="Photo de profil de {{ artiste.nom }}"
+                                 class="card-img-top"
+                                 style="height: 250px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center"
+                                 style="height: 250px;">
+                                <span class="text-muted">Pas de photo</span>
+                            </div>
+                        {% endif %}
 
+                        <div class="card-body">
+                            <!-- Nom du pro -->
+                            <h5 class="card-title">{{ artiste.nom }}</h5>
 
+                            <!-- Description -->
+                            {% if artiste.description %}
+                                <p class="card-text text-muted small">{{ artiste.description }}</p>
+                            {% endif %}
 
-    
+                            <!-- Badges -->
+                            <div class="mb-3">
+                                {% if artiste.style %}
+                                    <span class="badge bg-info">{{ artiste.style }}</span>
+                                {% endif %}
+                                {% if artiste.experience %}
+                                    <span class="badge bg-secondary">{{ artiste.experience }} ans</span>
+                                {% endif %}
+                                {% if artiste.ville %}
+                                    <span class="badge bg-light text-dark">{{ artiste.ville }}</span>
+                                {% endif %}
+                            </div>
 
-    
-        
-
-
-
+                            <!-- Lien vers le profil complet -->
+                            <a href="{{ path('app_profil_public', {'id': artiste.id}) }}" class="btn btn-primary btn-sm w-100">
+                                Voir le profil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p>Vous n'avez encore aucun artiste en favoris. <a href="{{ path('app_search_professionals') }}">Découvrez des artistes</a></p>
+        </div>
+    {% endif %}
+</div>
 
 
     <body> 

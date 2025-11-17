@@ -26,23 +26,32 @@
                             {% endif %}
                         </div>
                         <div class="col-md-8">
-                            <h1>{{ professionnel.nom }}</h1>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h1>{{ professionnel.nom }}</h1>
 
-                            {% if professionnel.description %}
-                                <p class="lead">{{ professionnel.description }}</p>
-                            {% endif %}
+                                    {% if professionnel.description %}
+                                        <p class="lead">{{ professionnel.description }}</p>
+                                    {% endif %}
 
-                            <div class="info-group">
-                                {% if professionnel.style %}
-                                    <p><strong>Style :</strong> <span class="badge bg-info">{{ professionnel.style }}</span></p>
-                                {% endif %}
+                                    <div class="info-group">
+                                        {% if professionnel.style %}
+                                            <p><strong>Style :</strong> <span class="badge bg-info">{{ professionnel.style }}</span></p>
+                                        {% endif %}
 
-                                {% if professionnel.experience %}
-                                    <p><strong>Expérience :</strong> {{ professionnel.experience }} an(s)</p>
-                                {% endif %}
+                                        {% if professionnel.experience %}
+                                            <p><strong>Expérience :</strong> {{ professionnel.experience }} an(s)</p>
+                                        {% endif %}
 
-                                {% if professionnel.ville %}
-                                    <p><strong>Localisation :</strong> {{ professionnel.ville }}</p>
+                                        {% if professionnel.ville %}
+                                            <p><strong>Localisation :</strong> {{ professionnel.ville }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if app.user and app.user.id != professionnel.id %}
+                                    <button class="btn btn-sm favoris-btn" data-artiste-id="{{ professionnel.id }}" title="Ajouter aux favoris">
+                                        ⭐
+                                    </button>
                                 {% endif %}
                             </div>
                         </div>
@@ -106,7 +115,7 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ path('app_messagerie') }}" class="btn btn-primary btn-lg">
+                        <a href="{{ path('app_messagerie', {'contact': professionnel.id}) }}" class="btn btn-primary btn-lg">
                             <i class="fas fa-envelope"></i> Contacter
                         </a>
                     </div>
@@ -202,6 +211,31 @@
         font-weight: 600;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
+
+    .favoris-btn {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid #ffc107;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .favoris-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+    }
+
+    .favoris-btn:active {
+        transform: scale(0.95);
+    }
+
+    .favoris-btn.favoris {
+        background: #ffc107;
+        border-color: #ffc107;
+    }
 </style>
 
 <script>
@@ -251,6 +285,50 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Erreur:', error));
         });
     });
+
+    // Gestion du bouton favoris
+    const favorisBtn = document.querySelector('.favoris-btn');
+    if (favorisBtn) {
+        const artisteId = favorisBtn.dataset.artisteId;
+
+        // Vérifier l'état du favori au chargement
+        fetch(`{{ path('app_favoris_check_artiste', {'id': 0}) }}`.replace('0', artisteId))
+            .then(response => response.json())
+            .then(data => {
+                if (data.favoris) {
+                    favorisBtn.classList.add('favoris');
+                }
+            })
+            .catch(error => console.error('Erreur lors de la vérification:', error));
+
+        // Gérer le clic sur le bouton favoris
+        favorisBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            fetch(`{{ path('app_favoris_toggle_artiste', {'id': 0}) }}`.replace('0', artisteId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Erreur:', data.error);
+                    return;
+                }
+
+                // Mettre à jour le bouton
+                if (data.favoris) {
+                    favorisBtn.classList.add('favoris');
+                } else {
+                    favorisBtn.classList.remove('favoris');
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        });
+    }
 });
 </script>
 {% endblock %}

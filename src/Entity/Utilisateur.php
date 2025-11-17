@@ -54,8 +54,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'Utilisateurs')]
-    private Collection $messages;
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'emetteur', cascade: ['remove'])]
+    private Collection $messagesEnvoyes;
+
+    /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'destinataire', cascade: ['remove'])]
+    private Collection $messagesRecus;
 
     /**
      * @var Collection<int, Avis>
@@ -93,12 +99,27 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'utilisateur', cascade: ['remove'])]
     private Collection $likeGives;
 
+    /**
+     * @var Collection<int, Favoris>
+     */
+    #[ORM\OneToMany(targetEntity: Favoris::class, mappedBy: 'utilisateur', cascade: ['remove'])]
+    private Collection $favorisGives;
+
+    /**
+     * @var Collection<int, Favoris>
+     */
+    #[ORM\OneToMany(targetEntity: Favoris::class, mappedBy: 'artiste', cascade: ['remove'])]
+    private Collection $favorisDonnes;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
-        $this->messages = new ArrayCollection();
+        $this->messagesEnvoyes = new ArrayCollection();
+        $this->messagesRecus = new ArrayCollection();
         $this->avis = new ArrayCollection();
         $this->likeGives = new ArrayCollection();
+        $this->favorisGives = new ArrayCollection();
+        $this->favorisDonnes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -251,27 +272,55 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Message>
      */
-    public function getMessages(): Collection
+    public function getMessagesEnvoyes(): Collection
     {
-        return $this->messages;
+        return $this->messagesEnvoyes;
     }
 
-    public function addMessage(Message $message): static
+    public function addMessageEnvoye(Message $message): static
     {
-        if (!$this->messages->contains($message)) {
-            $this->messages->add($message);
-            $message->setUtilisateurs($this);
+        if (!$this->messagesEnvoyes->contains($message)) {
+            $this->messagesEnvoyes->add($message);
+            $message->setEmetteur($this);
         }
 
         return $this;
     }
 
-    public function removeMessage(Message $message): static
+    public function removeMessageEnvoye(Message $message): static
     {
-        if ($this->messages->removeElement($message)) {
-            // set the owning side to null (unless already changed)
-            if ($message->getUtilisateurs() === $this) {
-                $message->setUtilisateurs(null);
+        if ($this->messagesEnvoyes->removeElement($message)) {
+            if ($message->getEmetteur() === $this) {
+                $message->setEmetteur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessagesRecus(): Collection
+    {
+        return $this->messagesRecus;
+    }
+
+    public function addMessageRecu(Message $message): static
+    {
+        if (!$this->messagesRecus->contains($message)) {
+            $this->messagesRecus->add($message);
+            $message->setDestinataire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessageRecu(Message $message): static
+    {
+        if ($this->messagesRecus->removeElement($message)) {
+            if ($message->getDestinataire() === $this) {
+                $message->setDestinataire(null);
             }
         }
 
@@ -427,6 +476,64 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->likeGives->removeElement($likeGive)) {
             if ($likeGive->getUtilisateur() === $this) {
                 $likeGive->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favoris>
+     */
+    public function getFavorisGives(): Collection
+    {
+        return $this->favorisGives;
+    }
+
+    public function addFavorisGive(Favoris $favorisGive): static
+    {
+        if (!$this->favorisGives->contains($favorisGive)) {
+            $this->favorisGives->add($favorisGive);
+            $favorisGive->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorisGive(Favoris $favorisGive): static
+    {
+        if ($this->favorisGives->removeElement($favorisGive)) {
+            if ($favorisGive->getUtilisateur() === $this) {
+                $favorisGive->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favoris>
+     */
+    public function getFavorisDonnes(): Collection
+    {
+        return $this->favorisDonnes;
+    }
+
+    public function addFavorisDonne(Favoris $favorisDonne): static
+    {
+        if (!$this->favorisDonnes->contains($favorisDonne)) {
+            $this->favorisDonnes->add($favorisDonne);
+            $favorisDonne->setArtiste($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorisDonne(Favoris $favorisDonne): static
+    {
+        if ($this->favorisDonnes->removeElement($favorisDonne)) {
+            if ($favorisDonne->getArtiste() === $this) {
+                $favorisDonne->setArtiste(null);
             }
         }
 

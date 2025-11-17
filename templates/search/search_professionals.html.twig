@@ -47,7 +47,7 @@
 
                             <div class="d-grid gap-2">
                                 <a href="{{ path('app_profil_public', {'id': pro.id}) }}" class="btn btn-info">Voir le profil</a>
-                                <a href="{{ path('app_messagerie') }}" class="btn btn-primary">Contacter</a>
+                                <a href="{{ path('app_messagerie', {'contact': pro.id}) }}" class="btn btn-primary">Contacter</a>
                             </div>
                         </div>
                     </div>
