@@ -33,6 +33,7 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         $this->getEntityManager()->flush();
     }
 
+
     //    /**
     //     * @return Utilisateur[] Returns an array of Utilisateur objects
     //     */
@@ -57,4 +58,5 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    
 }

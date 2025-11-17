@@ -34,6 +34,11 @@ class RegistrationController extends AbstractController
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
+            // Assigner le rôle ROLE_ADMIN pour les comptes Pro
+            if ($type === 'pro') {
+                $user->setRoles(['ROLE_ADMIN']);
+            }
+
             $entityManager->persist($user);
             $entityManager->flush();
 
