@@ -87,11 +87,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $style = null;
 
+    /**
+     * @var Collection<int, Like>
+     */
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'utilisateur', cascade: ['remove'])]
+    private Collection $likeGives;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->avis = new ArrayCollection();
+        $this->likeGives = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -393,6 +400,35 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStyle(?string $style): static
     {
         $this->style = $style;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Like>
+     */
+    public function getLikeGives(): Collection
+    {
+        return $this->likeGives;
+    }
+
+    public function addLikeGive(Like $likeGive): static
+    {
+        if (!$this->likeGives->contains($likeGive)) {
+            $this->likeGives->add($likeGive);
+            $likeGive->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikeGive(Like $likeGive): static
+    {
+        if ($this->likeGives->removeElement($likeGive)) {
+            if ($likeGive->getUtilisateur() === $this) {
+                $likeGive->setUtilisateur(null);
+            }
+        }
 
         return $this;
     }

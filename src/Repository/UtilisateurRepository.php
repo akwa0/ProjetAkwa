@@ -58,5 +58,30 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
     //            ->getOneOrNullResult()
     //        ;
     //    }
-    
+
+    public function searchProfessionals(?string $nom = null, ?string $ville = null, ?string $style = null): array
+    {
+        $query = $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%"ROLE_ADMIN"%')
+            ->orderBy('u.nom', 'ASC');
+
+        if ($nom !== null && $nom !== '') {
+            $query->andWhere('u.nom LIKE :nom')
+                ->setParameter('nom', '%' . $nom . '%');
+        }
+
+        if ($ville !== null && $ville !== '') {
+            $query->andWhere('u.ville LIKE :ville')
+                ->setParameter('ville', '%' . $ville . '%');
+        }
+
+        if ($style !== null && $style !== '') {
+            $query->andWhere('u.style LIKE :style')
+                ->setParameter('style', '%' . $style . '%');
+        }
+
+        return $query->getQuery()->getResult();
+    }
+
 }

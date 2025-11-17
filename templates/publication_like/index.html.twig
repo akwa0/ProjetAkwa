@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes publications likées{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <h1>Mes publications likées</h1>
+            <p class="lead text-muted">Total : {{ totalLikes }} publication(s)</p>
+        </div>
+    </div>
+
+    {% if likes | length > 0 %}
+        <div class="row">
+            {% for like in likes %}
+                {% set photo = like.photo %}
+                {% set professionnel = photo.photoPoster %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="position-relative" style="height: 300px; overflow: hidden;">
+                            <img src="{{ asset('uploads/' ~ photo.filename) }}"
+                                 alt="{{ photo.description }}"
+                                 class="card-img-top"
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                            <button class="btn btn-sm btn-light like-btn liked"
+                                    data-photo-id="{{ photo.id }}"
+                                    style="position: absolute; top: 10px; right: 10px;">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Professionnel -->
+                            <div class="mb-3">
+                                <h6 class="card-subtitle mb-2 text-muted">Par : {{ professionnel.nom }}</h6>
+                                {% if professionnel.style %}
+                                    <span class="badge bg-info">{{ professionnel.style }}</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Description de la photo -->
+                            {% if photo.description %}
+                                <p class="card-text">{{ photo.description }}</p>
+                            {% endif %}
+
+                            <!-- Compteur de likes -->
+                            <div class="like-info mb-3">
+                                <small class="text-muted" id="like-count-{{ photo.id }}">
+                                    {{ photo.likes | length }}
+                                    {% if photo.likes | length == 1 %}like{% else %}likes{% endif %}
+                                </small>
+                            </div>
+
+                            <!-- Date du like -->
+                            <small class="text-muted d-block mb-3">
+                                Liké le {{ like.dateLike | date('d/m/Y à H:i') }}
+                            </small>
+
+                            <!-- Boutons d'action -->
+                            <div class="d-grid gap-2">
+                                <a href="{{ path('app_profil_public', {'id': professionnel.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    Voir le profil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="alert alert-info text-center" role="alert">
+                    <h4 class="alert-heading">Aucune publication likée</h4>
+                    <p>Vous n'avez encore liké aucune publication.</p>
+                    <hr>
+                    <p class="mb-0">
+                        <a href="{{ path('app_search_professionals') }}" class="btn btn-primary">
+                            Découvrez des professionnels
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Retour au compte client -->
+    <div class="row mt-5">
+        <div class="col-md-8 mx-auto">
+            <a href="{{ path('app_compte_client') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour au compte
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .like-btn {
+        opacity: 0.8;
+        transition: all 0.3s;
+    }
+
+    .like-btn:hover {
+        opacity: 1;
+        background-color: #fff !important;
+    }
+
+    .like-btn.liked i {
+        color: #dc3545;
+    }
+
+    .card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const likeButtons = document.querySelectorAll('.like-btn');
+
+    likeButtons.forEach(button => {
+        const photoId = button.dataset.photoId;
+
+        // Gérer le clic sur le bouton like
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            fetch(`{{ path('app_like_toggle_photo', {'id': 0}) }}`.replace('0', photoId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Si le like a été supprimé, recharger la page
+                if (!data.liked) {
+                    setTimeout(() => {
+                        location.reload();
+                    }, 300);
+                }
+
+                // Mettre à jour le compteur de likes
+                const likeCountElement = document.getElementById(`like-count-${photoId}`);
+                if (likeCountElement) {
+                    const count = data.likeCount;
+                    likeCountElement.textContent = `${count} ${count === 1 ? 'like' : 'likes'}`;
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        });
+    });
+});
+</script>
+{% endblock %}

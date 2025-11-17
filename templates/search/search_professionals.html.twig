@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rechercher un professionnel{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Rechercher un professionnel</h1>
+
+    <!-- Afficher le formulaire -->
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+    <!-- Afficher les résultats -->
+    {% if resultats | length > 0 %}
+        <h2>Résultats de recherche ({{ resultats | length }} trouvé(s))</h2>
+
+        <div class="row">
+            {% for pro in resultats %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <!-- Photo de profil -->
+                        {% if pro.profilImage %}
+                            <img src="{{ asset('uploads/' ~ pro.profilImage) }}" class="card-img-top" alt="{{ pro.nom }}">
+                        {% else %}
+                            <img src="{{ asset('images/default-profile.jpg') }}" class="card-img-top" alt="Pas de photo">
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ pro.nom }}</h5>
+
+                            {% if pro.description %}
+                                <p class="card-text">{{ pro.description }}</p>
+                            {% endif %}
+
+                            {% if pro.style %}
+                                <p><strong>Style :</strong> {{ pro.style }}</p>
+                            {% endif %}
+
+                            {% if pro.experience %}
+                                <p><strong>Expérience :</strong> {{ pro.experience }} an(s)</p>
+                            {% endif %}
+
+                            {% if pro.ville %}
+                                <p><strong>Ville :</strong> {{ pro.ville }}</p>
+                            {% endif %}
+
+                            <div class="d-grid gap-2">
+                                <a href="{{ path('app_profil_public', {'id': pro.id}) }}" class="btn btn-info">Voir le profil</a>
+                                <a href="{{ path('app_messagerie') }}" class="btn btn-primary">Contacter</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% elseif submitted %}
+        <div class="alert alert-warning mt-4">
+            Aucun professionnel ne correspond à vos critères de recherche.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
