@@ -10,10 +10,12 @@
         align-items: center;
         flex-direction: column;
         font-family: sans-serif;
-        background-color: #9e89c1;
+        background-color: #6c60f1d2;
     }
     
+  
     #logo {
+        width: 70rem;
         opacity: 0;
         transform: scale(0.5);
         animation: logoAnim 2s ease-out forwards;
@@ -46,23 +48,19 @@
     }
     
     .btn-inscrire {
-        background-color: #8a5fd4;
+        background-color: #eddeef;
         color: white;
         
     }
     
     .btn-connecter {
-        background-color:#9670d7 ;
+        background-color:#eddeef ;
 
         
     }
     
-    #logo {
-        width: 150px;
-        border-radius: 20%;
-    }
     a{
-        color:  rgb(92, 76, 213);
+        color:  rgb(200, 101, 222);
         text-decoration: none;
         
     }
