@@ -1,20 +1,72 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} ParametreClient{% endblock %}
+{% block title %}Modifier mon profil{% endblock %}
 
 {% block body %}
- <h1>ParametreClient</h1>
+<link rel="stylesheet" href="{{ asset('pages/style.css') }}">
 
-{{ form_start(form) }}
-{{ form_row(form.nom) }}
-{{ form_row(form.email) }}
-{{ form_row(form.profilImage) }}
-{% if app.user.profilImage %}
-    <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" width="150" />
-{% else %}
-    <p>Aucune photo de profil</p>
-{% endif %}
+<a href="#" class="logo-button" onclick="toggleUserMenu(event)">
+    <img src="{{ asset('/image/Illustration_sans_titre 12.png') }}" alt="Logo" class="logo-icon">
+</a>
 
-<button type="submit" class="btn btn-primary">Enregistrer</button>
-{{ form_end(form) }}
+<div id="userMenu" class="user-menu hidden">
+    <div class="user-menu-content">
+        <p class="user-name">Connecté en tant que</p>
+        <p class="user-username">{{ app.user.nom }}</p>
+        <form action="{{ path('app_logout') }}" method="post" class="logout-form" id="logoutForm">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        </form>
+        <button type="button" class="logout-btn" onclick="document.getElementById('logoutForm').submit();">Se déconnecter</button>
+    </div>
+</div>
+
+<div class="page-container">
+    <h1 class="page-title">⚙️ Modifier mon Profil</h1>
+
+    <div class="edit-form">
+        {% if app.user.profilImage %}
+            <div class="current-profile-pic">
+                <p style="color: #666; margin-bottom: 15px; font-size: 14px;">Photo de profil actuelle</p>
+                <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" />
+            </div>
+        {% endif %}
+
+        {{ form_start(form, {'attr': {'class': 'edit-form-element'}}) }}
+            <div class="form-group">
+                {{ form_label(form.nom, 'Nom') }}
+                {{ form_widget(form.nom, {'attr': {'class': 'form-input'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.email, 'Email') }}
+                {{ form_widget(form.email, {'attr': {'class': 'form-input'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.profilImage, 'Changer la photo de profil') }}
+                {{ form_widget(form.profilImage, {'attr': {'class': 'form-input'}}) }}
+            </div>
+
+            <button type="submit" class="submit-btn">Enregistrer les modifications</button>
+        {{ form_end(form) }}
+    </div>
+
+    <a href="{{ path('app_compte_client') }}" class="back-button">← Retour au compte</a>
+</div>
+
+<script>
+    function toggleUserMenu(event) {
+        event.preventDefault();
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('userMenu');
+        const logoBtn = document.querySelector('.logo-button');
+        if (!menu.contains(event.target) && !logoBtn.contains(event.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+</script>
 {% endblock %}

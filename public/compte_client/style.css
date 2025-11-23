@@ -106,14 +106,21 @@
     color: white;
     padding: 10px 20px;
     border-radius: 8px;
-    text-decoration: none;
+    border: none;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .logout-btn:hover {
     background-color: #d04555;
+    cursor: pointer;
+    border: none;
+}
+
+.logout-form {
+    display: none;
 }
 
 /* Profile Header */

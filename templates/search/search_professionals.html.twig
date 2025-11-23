@@ -3,61 +3,113 @@
 {% block title %}Rechercher un professionnel{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h1>Rechercher un professionnel</h1>
+<link rel="stylesheet" href="{{ asset('pages/style.css') }}">
 
-    <!-- Afficher le formulaire -->
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-    {{ form_end(form) }}
+<a href="#" class="logo-button" onclick="toggleUserMenu(event)">
+    <img src="{{ asset('/image/Illustration_sans_titre 12.png') }}" alt="Logo" class="logo-icon">
+</a>
 
-    <!-- Afficher les résultats -->
+<div id="userMenu" class="user-menu hidden">
+    <div class="user-menu-content">
+        <p class="user-name">Connecté en tant que</p>
+        <p class="user-username">{{ app.user.nom }}</p>
+        <form action="{{ path('app_logout') }}" method="post" class="logout-form" id="logoutForm">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        </form>
+        <button type="button" class="logout-btn" onclick="document.getElementById('logoutForm').submit();">Se déconnecter</button>
+    </div>
+</div>
+
+<div class="page-container">
+    <h1 class="page-title">🔍 Rechercher un Artiste</h1>
+
+    <div class="search-form">
+        {{ form_start(form, {'attr': {'class': 'search-form-element'}}) }}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                {% for child in form %}
+                    {% if child.vars.name != '_token' %}
+                        <div>
+                            {{ form_label(child) }}
+                            {{ form_widget(child, {'attr': {'class': 'form-input'}}) }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <button type="submit" class="search-btn" style="margin-top: 15px;">Rechercher</button>
+        {{ form_end(form) }}
+    </div>
+
     {% if resultats | length > 0 %}
-        <h2>Résultats de recherche ({{ resultats | length }} trouvé(s))</h2>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #333; font-size: 20px;">{{ resultats | length }} professionnel(s) trouvé(s)</h2>
+        </div>
 
-        <div class="row">
+        <div class="results-grid">
             {% for pro in resultats %}
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <!-- Photo de profil -->
-                        {% if pro.profilImage %}
-                            <img src="{{ asset('uploads/' ~ pro.profilImage) }}" class="card-img-top" alt="{{ pro.nom }}">
-                        {% else %}
-                            <img src="{{ asset('images/default-profile.jpg') }}" class="card-img-top" alt="Pas de photo">
+                <div class="pro-card">
+                    {% if pro.profilImage %}
+                        <img src="{{ asset('uploads/' ~ pro.profilImage) }}" class="pro-card-image" alt="{{ pro.nom }}">
+                    {% else %}
+                        <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #c865de 0%, #eddeef 100%); display: flex; align-items: center; justify-content: center; font-size: 60px;">
+                            🎨
+                        </div>
+                    {% endif %}
+
+                    <div class="pro-card-body">
+                        <h3 class="pro-card-title">{{ pro.nom }}</h3>
+
+                        {% if pro.style %}
+                            <span class="pro-card-badge">{{ pro.style }}</span>
                         {% endif %}
 
-                        <div class="card-body">
-                            <h5 class="card-title">{{ pro.nom }}</h5>
+                        {% if pro.experience %}
+                            <div class="pro-card-info">📅 {{ pro.experience }} an(s) d'expérience</div>
+                        {% endif %}
 
-                            {% if pro.description %}
-                                <p class="card-text">{{ pro.description }}</p>
-                            {% endif %}
+                        {% if pro.ville %}
+                            <div class="pro-card-info">📍 {{ pro.ville }}</div>
+                        {% endif %}
 
-                            {% if pro.style %}
-                                <p><strong>Style :</strong> {{ pro.style }}</p>
-                            {% endif %}
+                        {% if pro.description %}
+                            <p class="pro-card-info">{{ pro.description | slice(0, 80) }}{% if pro.description | length > 80 %}...{% endif %}</p>
+                        {% endif %}
 
-                            {% if pro.experience %}
-                                <p><strong>Expérience :</strong> {{ pro.experience }} an(s)</p>
-                            {% endif %}
-
-                            {% if pro.ville %}
-                                <p><strong>Ville :</strong> {{ pro.ville }}</p>
-                            {% endif %}
-
-                            <div class="d-grid gap-2">
-                                <a href="{{ path('app_profil_public', {'id': pro.id}) }}" class="btn btn-info">Voir le profil</a>
-                                <a href="{{ path('app_messagerie', {'contact': pro.id}) }}" class="btn btn-primary">Contacter</a>
-                            </div>
+                        <div class="pro-card-buttons">
+                            <a href="{{ path('app_profil_public', {'id': pro.id}) }}" class="pro-card-btn pro-card-btn-primary">Voir le profil</a>
+                            <a href="{{ path('app_messagerie', {'contact': pro.id}) }}" class="pro-card-btn pro-card-btn-secondary">Contacter</a>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% elseif submitted %}
-        <div class="alert alert-warning mt-4">
-            Aucun professionnel ne correspond à vos critères de recherche.
+        <div class="empty-state">
+            <h3>Aucun résultat</h3>
+            <p>Aucun professionnel ne correspond à vos critères de recherche. Essayez d'autres filtres!</p>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>Commencez votre recherche</h3>
+            <p>Utilisez le formulaire ci-dessus pour chercher des artistes selon le style, la localisation ou d'autres critères.</p>
         </div>
     {% endif %}
+
+    <a href="{{ path('app_compte_client') }}" class="back-button">← Retour au compte</a>
 </div>
+
+<script>
+    function toggleUserMenu(event) {
+        event.preventDefault();
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('userMenu');
+        const logoBtn = document.querySelector('.logo-button');
+        if (!menu.contains(event.target) && !logoBtn.contains(event.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+</script>
 {% endblock %}
