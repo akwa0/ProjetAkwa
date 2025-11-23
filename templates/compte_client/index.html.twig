@@ -1,99 +1,141 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CompteClientController!{% endblock %}
+{% block title %}Mon Compte Client{% endblock %}
 
 {% block body %}
-<link rel="stylesheet" href="{{ asset('profils pro/style.css') }}">
-<script src="{{ asset('profils pro/script.js') }}"></script>
-<head>
-    <meta charset="UTF-8">
-    <title>Compte client</title>
-    <link rel="stylesheet" href="./accueil/style.css">
-    </head>
+<link rel="stylesheet" href="{{ asset('compte_client/style.css') }}">
 
-    <h1>Bienvenue sur votre compte client {{ app.user.nom }}</h1>
-<body>
-   <div class="profile-info">
-    <p><strong>Nom :</strong> {{ app.user.nom }}</p>
+<body class="client-body">
+    <!-- Header avec logo et profil -->
+    <div class="client-header">
+        <a href="#" class="logo-button" onclick="toggleUserMenu(event)">
+            <img src="{{ asset('/image/Illustration_sans_titre 12.png') }}" alt="Logo" class="logo-icon">
+        </a>
 
-  
+        <!-- Menu utilisateur (caché par défaut) -->
+        <div id="userMenu" class="user-menu hidden">
+            <div class="user-menu-content">
+                <p class="user-name">Connecté en tant que</p>
+                <p class="user-username">{{ app.user.nom }}</p>
+                <a href="{{ path('app_logout') }}" class="logout-btn">Se déconnecter</a>
+            </div>
+        </div>
 
-    {% if app.user.profilImage %}
-        <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" width="150" />
-    {% else %}
-        <p>Aucune photo de profil</p>
-    {% endif %}
-</div>
-
-
-    <button type="submit"><a href="{{ path('app_messagerie') }}" class="btn">messagerie</a></button>
-    <a href="{{ path('app_search_professionals') }}" class="btn btn-primary">Recherche</a>
-
-    <button type="submit"><a href="{{ path('app_parametre_client') }}" class="btn">parametre</a></button>
-    <button type="submit"><a href="{{ path('app_publication_likes') }}" class="btn">Publication Liké</a></button>
-
-<!-- Mes Artistes Favoris -->
-<hr class="my-5">
-<div class="favoris-section">
-    <h2>Mes Artistes Favoris ⭐</h2>
-
-    {% if app.user.favorisGives | length > 0 %}
-        <div class="row">
-            {% for favori in app.user.favorisGives %}
-                {% set artiste = favori.artiste %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <!-- Photo de profil -->
-                        {% if artiste.profilImage %}
-                            <img src="{{ asset('uploads/' ~ artiste.profilImage) }}"
-                                 alt="Photo de profil de {{ artiste.nom }}"
-                                 class="card-img-top"
-                                 style="height: 250px; object-fit: cover;">
-                        {% else %}
-                            <div class="bg-light d-flex align-items-center justify-content-center"
-                                 style="height: 250px;">
-                                <span class="text-muted">Pas de photo</span>
-                            </div>
-                        {% endif %}
-
-                        <div class="card-body">
-                            <!-- Nom du pro -->
-                            <h5 class="card-title">{{ artiste.nom }}</h5>
-
-                            <!-- Description -->
-                            {% if artiste.description %}
-                                <p class="card-text text-muted small">{{ artiste.description }}</p>
-                            {% endif %}
-
-                            <!-- Badges -->
-                            <div class="mb-3">
-                                {% if artiste.style %}
-                                    <span class="badge bg-info">{{ artiste.style }}</span>
-                                {% endif %}
-                                {% if artiste.experience %}
-                                    <span class="badge bg-secondary">{{ artiste.experience }} ans</span>
-                                {% endif %}
-                                {% if artiste.ville %}
-                                    <span class="badge bg-light text-dark">{{ artiste.ville }}</span>
-                                {% endif %}
-                            </div>
-
-                            <!-- Lien vers le profil complet -->
-                            <a href="{{ path('app_profil_public', {'id': artiste.id}) }}" class="btn btn-primary btn-sm w-100">
-                                Voir le profil
-                            </a>
-                        </div>
+        <div class="profile-header">
+            <div class="profile-pic-container">
+                {% if app.user.profilImage %}
+                    <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" class="profile-pic">
+                {% else %}
+                    <div class="profile-pic-placeholder">
+                        <span>✨</span>
                     </div>
-                </div>
-            {% endfor %}
+                {% endif %}
+            </div>
+            <h1 class="profile-name">{{ app.user.nom }}</h1>
         </div>
-    {% else %}
-        <div class="alert alert-info">
-            <p>Vous n'avez encore aucun artiste en favoris. <a href="{{ path('app_search_professionals') }}">Découvrez des artistes</a></p>
-        </div>
-    {% endif %}
-</div>
+    </div>
 
+    <!-- Boutons d'action -->
+    <div class="action-buttons">
+        <a href="{{ path('app_messagerie') }}" class="action-btn">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Messagerie
+        </a>
 
-    <body> 
+        <a href="{{ path('app_search_professionals') }}" class="action-btn">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            Rechercher
+        </a>
+
+        <a href="{{ path('app_parametre_client') }}" class="action-btn">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="12" cy="5" r="1"></circle>
+                <circle cx="12" cy="19" r="1"></circle>
+            </svg>
+            Modifier le profil
+        </a>
+
+        <a href="{{ path('app_publication_likes') }}" class="action-btn">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            Publications aimées
+        </a>
+    </div>
+
+    <!-- Artistes Favoris -->
+    <div class="favoris-section">
+        <h2 class="favoris-title">Mes Artistes Favoris ⭐</h2>
+
+        {% if app.user.favorisGives | length > 0 %}
+            <div class="artistes-list">
+                {% for favori in app.user.favorisGives %}
+                    {% set artiste = favori.artiste %}
+                    <div class="artiste-card">
+                        <div class="artiste-header">
+                            <div class="artiste-pic-container">
+                                {% if artiste.profilImage %}
+                                    <img src="{{ asset('uploads/' ~ artiste.profilImage) }}"
+                                         alt="Photo de profil de {{ artiste.nom }}"
+                                         class="artiste-pic">
+                                {% else %}
+                                    <div class="artiste-pic-placeholder">
+                                        <span>🎨</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="artiste-info">
+                                <h3 class="artiste-name">{{ artiste.nom }}</h3>
+                                <p class="artiste-style">
+                                    {% if artiste.style %}
+                                        {{ artiste.style }}
+                                    {% endif %}
+                                </p>
+                                <p class="artiste-location">
+                                    {% if artiste.ville %}
+                                        📍 {{ artiste.ville }}
+                                    {% endif %}
+                                </p>
+                                {% if artiste.description %}
+                                    <p class="artiste-description">{{ artiste.description }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <a href="{{ path('app_profil_public', {'id': artiste.id}) }}" class="artiste-link">
+                            Voir le profil
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-favoris">
+                <p>Vous n'avez encore aucun artiste en favoris.</p>
+                <a href="{{ path('app_search_professionals') }}" class="discover-link">Découvrez des artistes</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleUserMenu(event) {
+            event.preventDefault();
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Fermer le menu si on clique ailleurs
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('userMenu');
+            const logoBtn = document.querySelector('.logo-button');
+            if (!menu.contains(event.target) && !logoBtn.contains(event.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
 {% endblock %}
