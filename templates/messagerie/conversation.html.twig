@@ -3,103 +3,421 @@
 {% block title %}Conversation avec {{ contact.nom }}{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <!-- En-tête de la conversation -->
-            <div class="card mb-4">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        {% if contact.profilImage %}
-                            <img src="{{ asset('uploads/' ~ contact.profilImage) }}"
-                                 alt="{{ contact.nom }}"
-                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; margin-right: 20px;">
-                        {% else %}
-                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
-                                 style="width: 60px; height: 60px; border-radius: 50%; margin-right: 20px;">
-                                {{ contact.nom | first }}
-                            </div>
-                        {% endif %}
-                        <div>
-                            <h5 class="mb-0">{{ contact.nom }}</h5>
-                            {% if contact.description %}
-                                <small class="text-muted">{{ contact.description }}</small>
-                            {% endif %}
-                        </div>
+<link rel="stylesheet" href="{{ asset('pages/style.css') }}">
+
+<!-- Header avec logo et menu profil -->
+<a href="#" class="logo-button" onclick="toggleUserMenu(event)">
+    <img src="{{ asset('/image/Illustration_sans_titre 12.png') }}" alt="Logo" class="logo-icon">
+</a>
+
+{% if app.user %}
+<div id="userMenu" class="user-menu hidden">
+    <div class="user-menu-content">
+        <p class="user-name">Connecté en tant que</p>
+        <p class="user-username">{{ app.user.nom }}</p>
+        <button type="submit" class="logout-btn" form="logoutForm">Se déconnecter</button>
+        <form action="{{ path('app_logout') }}" method="post" class="logout-form" id="logoutForm" style="display: none;">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<div class="conversation-container">
+    <!-- En-tête de la conversation -->
+    <div class="conversation-header">
+        <div class="conversation-info">
+            <div class="conversation-avatar">
+                {% if contact.profilImage %}
+                    <img src="{{ asset('uploads/' ~ contact.profilImage) }}"
+                         alt="{{ contact.nom }}">
+                {% else %}
+                    <div class="avatar-placeholder">
+                        🎨
                     </div>
-                    <a href="{{ path('app_profil_public', {'id': contact.id}) }}" class="btn btn-outline-primary btn-sm">
-                        Voir le profil
-                    </a>
-                </div>
+                {% endif %}
             </div>
-
-            <!-- Messages -->
-            <div class="card mb-4" style="height: 400px; overflow-y: auto; background-color: #f8f9fa;">
-                <div class="card-body">
-                    {% if messages | length > 0 %}
-                        {% for message in messages %}
-                            <div class="mb-3">
-                                {% if message.emetteur.id == app.user.id %}
-                                    <!-- Message envoyé -->
-                                    <div class="text-right">
-                                        <div class="d-inline-block" style="background-color: #007bff; color: white; padding: 10px 15px; border-radius: 10px; max-width: 70%;">
-                                            {{ message.contenu }}
-                                            <br>
-                                            <small style="opacity: 0.8;">{{ message.dateEnvoie | date('H:i') }}</small>
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    <!-- Message reçu -->
-                                    <div class="text-left">
-                                        <div class="d-inline-block" style="background-color: #e9ecef; color: #333; padding: 10px 15px; border-radius: 10px; max-width: 70%;">
-                                            {{ message.contenu }}
-                                            <br>
-                                            <small style="opacity: 0.7;">{{ message.dateEnvoie | date('H:i') }}</small>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-muted text-center">Aucun message pour le moment. Commencez la conversation !</p>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Formulaire d'envoi -->
-            <div class="card">
-                <div class="card-body">
-                    {{ form_start(form, {'attr': {'class': 'form-group'}}) }}
-                        {{ form_errors(form) }}
-
-                        <div class="form-group">
-                            {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.contenu) }}
-                        </div>
-
-                        <div class="form-group">
-                            {{ form_widget(form.envoyer, {'attr': {'class': 'btn btn-primary btn-block'}}) }}
-                        </div>
-                    {{ form_end(form) }}
-                </div>
-            </div>
-
-            <!-- Retour -->
-            <div class="mt-4">
-                <a href="{{ path('app_messagerie') }}" class="btn btn-secondary">← Retour aux conversations</a>
+            <div class="conversation-details">
+                <h2 class="conversation-name">{{ contact.nom }}</h2>
+                {% if contact.description %}
+                    <p class="conversation-description">{{ contact.description }}</p>
+                {% endif %}
             </div>
         </div>
+        <div class="conversation-actions">
+            <a href="{{ path('app_profil_public', {'id': contact.id}) }}" class="action-btn-conversation">
+                👤 Voir le profil
+            </a>
+            <a href="{{ path('app_messagerie') }}" class="action-btn-conversation secondary">
+                ← Retour
+            </a>
+        </div>
+    </div>
+
+    <!-- Zone des messages -->
+    <div class="messages-container">
+        {% if messages | length > 0 %}
+            {% for message in messages %}
+                <div class="message-wrapper {% if message.emetteur.id == app.user.id %}sent{% else %}received{% endif %}">
+                    <div class="message-bubble">
+                        <p class="message-content">{{ message.contenu }}</p>
+                        <span class="message-time">{{ message.dateEnvoie | date('H:i') }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-conversation">
+                <div class="empty-icon">💬</div>
+                <p>Aucun message pour le moment</p>
+                <p class="empty-subtitle">Commencez la conversation !</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Formulaire d'envoi -->
+    <div class="message-form-container">
+        {{ form_start(form, {'attr': {'class': 'message-form'}}) }}
+            {{ form_errors(form) }}
+
+            <div class="form-input-group">
+                {{ form_widget(form.contenu, {'attr': {'class': 'message-input', 'placeholder': 'Écrivez votre message...'}}) }}
+                {{ form_errors(form.contenu) }}
+                {{ form_widget(form.envoyer, {'attr': {'class': 'message-submit-btn'}}) }}
+            </div>
+        {{ form_end(form) }}
     </div>
 </div>
 
 <style>
-    .card-body {
-        word-break: break-word;
+    body {
+        background: #f5f5f5;
+        margin: 0;
+        padding: 0;
     }
 
-    .form-control:focus {
+    .conversation-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background: white;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* En-tête de conversation */
+    .conversation-header {
+        background: linear-gradient(135deg, #c865de 0%, #eddeef 100%);
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .conversation-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+
+    .conversation-avatar {
+        flex-shrink: 0;
+    }
+
+    .conversation-avatar img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .avatar-placeholder {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .conversation-details {
+        flex: 1;
+    }
+
+    .conversation-name {
+        font-size: 20px;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 5px 0;
+    }
+
+    .conversation-description {
+        font-size: 13px;
+        color: #666;
+        margin: 0;
+    }
+
+    .conversation-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-btn-conversation {
+        background: white;
+        color: #333;
+        padding: 8px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 1px solid #ddd;
+    }
+
+    .action-btn-conversation:hover {
+        background: #f5f5f5;
+        transform: translateY(-2px);
+    }
+
+    .action-btn-conversation.secondary {
+        background: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Zone des messages */
+    .messages-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .message-wrapper {
+        display: flex;
+        margin-bottom: 8px;
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .message-wrapper.sent {
+        justify-content: flex-end;
+    }
+
+    .message-wrapper.received {
+        justify-content: flex-start;
+    }
+
+    .message-bubble {
+        max-width: 70%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        word-wrap: break-word;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .message-wrapper.sent .message-bubble {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+    }
+
+    .message-wrapper.received .message-bubble {
+        background: #e9ecef;
+        color: #333;
+    }
+
+    .message-content {
+        margin: 0 0 6px 0;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .message-time {
+        font-size: 12px;
+        opacity: 0.7;
+        display: block;
+        text-align: right;
+    }
+
+    .message-wrapper.received .message-time {
+        text-align: left;
+    }
+
+    /* Message vide */
+    .empty-conversation {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #999;
+    }
+
+    .empty-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+
+    .empty-conversation p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .empty-subtitle {
+        font-size: 13px !important;
+        color: #bbb;
+        margin-top: 5px !important;
+    }
+
+    /* Formulaire d'envoi */
+    .message-form-container {
+        padding: 15px 20px;
+        background: #f9f9f9;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .message-form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .form-input-group {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+    }
+
+    .message-input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 1px solid #ddd;
+        border-radius: 24px;
+        font-size: 14px;
+        font-family: inherit;
+        resize: none;
+        max-height: 80px;
+        transition: all 0.3s ease;
+    }
+
+    .message-input:focus {
+        outline: none;
         border-color: #007bff;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .message-submit-btn {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 24px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0, 91, 179, 0.2);
+    }
+
+    .message-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 91, 179, 0.4);
+    }
+
+    .message-submit-btn:active {
+        transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .conversation-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .conversation-info {
+            justify-content: center;
+        }
+
+        .conversation-actions {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .action-btn-conversation {
+            flex: 1;
+        }
+
+        .message-bubble {
+            max-width: 85%;
+        }
+
+        .messages-container {
+            padding: 15px;
+        }
+    }
+
+    /* Scrollbar personnalisée */
+    .messages-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .messages-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .messages-container::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+
+    .messages-container::-webkit-scrollbar-thumb:hover {
+        background: #555;
     }
 </style>
+
+<script>
+function toggleUserMenu(event) {
+    event.preventDefault();
+    const menu = document.getElementById('userMenu');
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('userMenu');
+    const logoBtn = document.querySelector('.logo-button');
+    if (menu && logoBtn && !menu.contains(event.target) && !logoBtn.contains(event.target)) {
+        menu.classList.add('hidden');
+    }
+});
+
+// Scroll automatique vers le bas
+document.addEventListener('DOMContentLoaded', function() {
+    const messagesContainer = document.querySelector('.messages-container');
+    if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+});
+</script>
 {% endblock %}

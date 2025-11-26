@@ -17,10 +17,10 @@
             <div class="user-menu-content">
                 <p class="user-name">Connecté en tant que</p>
                 <p class="user-username">{{ app.user.nom }}</p>
-                <form action="{{ path('app_logout') }}" method="post" class="logout-form" id="logoutForm">
+                <button type="submit" class="logout-btn" form="logoutForm">Se déconnecter</button>
+                <form action="{{ path('app_logout') }}" method="post" class="logout-form" id="logoutForm" style="display: none;">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
                 </form>
-                <button type="button" class="logout-btn" onclick="document.getElementById('logoutForm').submit();">Se déconnecter</button>
             </div>
         </div>
 

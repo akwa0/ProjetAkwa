@@ -13,10 +13,10 @@
     <div class="user-menu-content">
         <p class="user-name">Connecté en tant que</p>
         <p class="user-username">{{ app.user.nom }}</p>
-        <form action="{{ path('app_logout') }}" method="post" class="logout-form" id="logoutForm">
+        <button type="submit" class="logout-btn" form="logoutForm">Se déconnecter</button>
+        <form action="{{ path('app_logout') }}" method="post" class="logout-form" id="logoutForm" style="display: none;">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
         </form>
-        <button type="button" class="logout-btn" onclick="document.getElementById('logoutForm').submit();">Se déconnecter</button>
     </div>
 </div>
 
@@ -25,6 +25,18 @@
 
     <div style="text-align: center; margin-bottom: 30px; color: #666;">
         Total : <strong>{{ totalLikes }}</strong> publication(s)
+    </div>
+
+    <!-- Modal pour afficher l'image en grand -->
+    <div id="imageModal" class="image-modal-likes" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeImageModal()">&times;</button>
+            <img id="modalImage" src="" alt="Image agrandie" class="modal-image">
+            <div class="modal-navigation">
+                <button class="modal-prev" onclick="previousPhoto()">&larr; Précédente</button>
+                <button class="modal-next" onclick="nextPhoto()">Suivante &rarr;</button>
+            </div>
+        </div>
     </div>
 
     {% if likes | length > 0 %}
@@ -36,7 +48,9 @@
                     <div class="photo-image-container">
                         <img src="{{ asset('uploads/' ~ photo.filename) }}"
                              alt="{{ photo.description }}"
-                             class="photo-image">
+                             class="photo-image"
+                             data-photo-id="{{ photo.id }}"
+                             style="cursor: pointer;">
                         <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 20px; color: white;">
                             <div style="font-weight: 600; font-size: 16px;">{{ professionnel.nom }}</div>
                             {% if professionnel.style %}
@@ -81,7 +95,121 @@
     <a href="{{ path('app_compte_client') }}" class="back-button">← Retour au compte</a>
 </div>
 
+<style>
+    /* Modal pour les images */
+    .image-modal-likes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .modal-content {
+        position: relative;
+        max-width: 90vw;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-image {
+        max-width: 100%;
+        max-height: 70vh;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        background: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 32px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1001;
+    }
+
+    .modal-close:hover {
+        background: #f0f0f0;
+        transform: scale(1.1);
+    }
+
+    .modal-navigation {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+        z-index: 1001;
+    }
+
+    .modal-prev,
+    .modal-next {
+        background: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-prev:hover,
+    .modal-next:hover {
+        background: #f0f0f0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-prev:active,
+    .modal-next:active {
+        transform: translateY(0);
+    }
+</style>
+
 <script>
+    let currentPhotoIndex = 0;
+    let allPhotos = [];
+
     function toggleUserMenu(event) {
         event.preventDefault();
         const menu = document.getElementById('userMenu');
@@ -96,39 +224,109 @@
         }
     });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const likeButtons = document.querySelectorAll('.like-button');
+    // Gestion du modal des images
+    function openImageModal(photoId) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
 
-    likeButtons.forEach(button => {
-        const photoId = button.dataset.photoId;
+        // Trouver l'index de la photo
+        currentPhotoIndex = allPhotos.findIndex(p => p.id === photoId);
 
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
+        // Afficher l'image
+        modalImage.src = allPhotos[currentPhotoIndex].src;
+        modal.style.display = 'flex';
+    }
 
-            fetch(`{{ path('app_like_toggle_photo', {'id': 0}) }}`.replace('0', photoId), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.liked) {
-                    setTimeout(() => {
-                        location.reload();
-                    }, 300);
-                }
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        modal.style.display = 'none';
+    }
 
-                const likeCountElement = document.getElementById(`like-count-${photoId}`);
-                if (likeCountElement) {
-                    const count = data.likeCount;
-                    likeCountElement.textContent = `${count} ${count === 1 ? 'like' : 'likes'}`;
-                }
-            })
-            .catch(error => console.error('Erreur:', error));
+    function nextPhoto() {
+        currentPhotoIndex = (currentPhotoIndex + 1) % allPhotos.length;
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = allPhotos[currentPhotoIndex].src;
+    }
+
+    function previousPhoto() {
+        currentPhotoIndex = (currentPhotoIndex - 1 + allPhotos.length) % allPhotos.length;
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = allPhotos[currentPhotoIndex].src;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('imageModal');
+
+        // Fermer avec Échap
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+            // Navigation avec les flèches
+            if (e.key === 'ArrowRight') {
+                nextPhoto();
+            }
+            if (e.key === 'ArrowLeft') {
+                previousPhoto();
+            }
+        });
+
+        // Fermer au clic en dehors
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeImageModal();
+            }
+        });
+
+        // Ajouter les images à la liste
+        const photoImages = document.querySelectorAll('.photo-image');
+        photoImages.forEach((img, index) => {
+            const photoId = parseInt(img.getAttribute('data-photo-id'));
+            allPhotos.push({
+                id: photoId,
+                src: img.src
+            });
+
+            // Ajouter l'écouteur de clic
+            img.addEventListener('click', function(e) {
+                e.stopPropagation();
+                openImageModal(photoId);
+            });
+        });
+
+        // Gestion des likes
+        const likeButtons = document.querySelectorAll('.like-button');
+
+        likeButtons.forEach(button => {
+            const photoId = button.dataset.photoId;
+
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                fetch(`{{ path('app_like_toggle_photo', {'id': 0}) }}`.replace('0', photoId), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.liked) {
+                        setTimeout(() => {
+                            location.reload();
+                        }, 300);
+                    }
+
+                    const likeCountElement = document.getElementById(`like-count-${photoId}`);
+                    if (likeCountElement) {
+                        const count = data.likeCount;
+                        likeCountElement.textContent = `${count} ${count === 1 ? 'like' : 'likes'}`;
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+            });
         });
     });
-});
 </script>
 {% endblock %}
