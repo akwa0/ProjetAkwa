@@ -1,37 +1,366 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Parametre{% endblock %}
+{% block title %}Paramètres du compte{% endblock %}
 
 {% block body %}
+<link rel="stylesheet" href="{{ asset('pages/style.css') }}">
 
-<h1>Parametre</h1>
+<!-- Header avec logo et menu profil -->
+<a href="#" class="logo-button" onclick="toggleUserMenu(event)">
+    <img src="{{ asset('/image/Illustration_sans_titre 12.png') }}" alt="Logo" class="logo-icon">
+</a>
 
-{%for message in app.flashes('success') %}
-<div class="alert alert-success">
-    {{ message }}
+<!-- Menu utilisateur -->
+<div id="userMenu" class="user-menu hidden">
+    <div class="user-menu-content">
+        <p class="user-name">Connecté en tant que</p>
+        <p class="user-username">{{ app.user.nom }}</p>
+        <button type="submit" class="logout-btn" form="logoutForm">Se déconnecter</button>
+        <form action="{{ path('app_logout') }}" method="post" class="logout-form" id="logoutForm" style="display: none;">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        </form>
+    </div>
 </div>
-{% endfor %}
 
-{{ form_start(form) }}
-{{ form_row(form.nom) }}
-{{ form_row(form.email) }}
-{{ form_row(form.description) }}
-{{ form_row(form.profilImage) }}
-{% if app.user.profilImage %}
-    <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" width="150" />
-{% else %}
-    <p>Aucune photo de profil</p>
-{% endif %}
+<div class="page-container">
+    <!-- En-tête -->
+    <div class="settings-header">
+        <a href="{{ path('app_compte_pro') }}" class="back-button-settings">← Retour au compte</a>
+        <h1 class="settings-title">⚙️ Paramètres du compte</h1>
+        <p class="settings-subtitle">Mettez à jour vos informations professionnelles</p>
+    </div>
 
-{{ form_row(form.telephone) }}
-{{ form_row(form.adresse) }}
-{{ form_row(form.codePostal) }}
-{{ form_row(form.ville) }}
-{{ form_row(form.pays) }}
-{{ form_row(form.style) }}
-{{ form_row(form.experience) }}
-<button type="submit" class="btn btn-primary">Enregistrer</button>
-{{ form_end(form) }}
+    <!-- Messages de succès -->
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            ✓ {{ message }}
+        </div>
+    {% endfor %}
 
+    <!-- Formulaire -->
+    <div class="settings-form-container">
+        {{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
 
+        <!-- Section Profil -->
+        <div class="settings-section">
+            <h2 class="section-title">👤 Information Profil</h2>
+
+            <div class="form-group">
+                <label class="form-label">Votre nom professionnel</label>
+                {{ form_widget(form.nom, {'attr': {'class': 'form-input'}}) }}
+                {{ form_errors(form.nom) }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                {{ form_widget(form.email, {'attr': {'class': 'form-input'}}) }}
+                {{ form_errors(form.email) }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Biographie professionnelle</label>
+                {{ form_widget(form.description, {'attr': {'class': 'form-textarea', 'rows': '4'}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+
+        <!-- Section Photo de profil -->
+        <div class="settings-section">
+            <h2 class="section-title">📸 Photo de Profil</h2>
+
+            {% if app.user.profilImage %}
+                <div class="current-image">
+                    <img src="{{ asset('uploads/' ~ app.user.profilImage) }}" alt="Photo de profil" class="current-image-display">
+                    <p class="current-image-label">Votre photo actuelle</p>
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label class="form-label">Télécharger une nouvelle photo</label>
+                {{ form_widget(form.profilImage, {'attr': {'class': 'form-file-input'}}) }}
+                {{ form_errors(form.profilImage) }}
+                <p class="form-help-text">Formats acceptés: JPG, PNG. Taille max: 5MB</p>
+            </div>
+        </div>
+
+        <!-- Section Style et Expérience -->
+        <div class="settings-section">
+            <h2 class="section-title">🎨 Style & Expérience</h2>
+
+            <div class="form-group">
+                <label class="form-label">Style artistique</label>
+                {{ form_widget(form.style, {'attr': {'class': 'form-input'}}) }}
+                {{ form_errors(form.style) }}
+                <p class="form-help-text">Ex: Tatouage, Peinture, Photographie, etc.</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Années d'expérience</label>
+                {{ form_widget(form.experience, {'attr': {'class': 'form-input', 'type': 'number'}}) }}
+                {{ form_errors(form.experience) }}
+            </div>
+        </div>
+
+        <!-- Section Localisation -->
+        <div class="settings-section">
+            <h2 class="section-title">📍 Localisation</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Adresse</label>
+                    {{ form_widget(form.adresse, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.adresse) }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Code Postal</label>
+                    {{ form_widget(form.codePostal, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.codePostal) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Ville</label>
+                    {{ form_widget(form.ville, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.ville) }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Téléphone</label>
+                    {{ form_widget(form.telephone, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.telephone) }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Pays</label>
+                {{ form_widget(form.pays, {'attr': {'class': 'form-input'}}) }}
+                {{ form_errors(form.pays) }}
+            </div>
+        </div>
+
+        <!-- Bouton d'enregistrement -->
+        <div class="settings-actions">
+            <button type="submit" class="btn-submit">Enregistrer les modifications</button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+</div>
+
+<style>
+    /* En-tête des paramètres */
+    .settings-header {
+        margin-bottom: 40px;
+    }
+
+    .back-button-settings {
+        display: inline-block;
+        background: #f0f0f0;
+        color: #333;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    .back-button-settings:hover {
+        background: #e0e0e0;
+        transform: translateY(-2px);
+    }
+
+    .settings-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+        margin: 20px 0 10px 0;
+    }
+
+    .settings-subtitle {
+        color: #999;
+        font-size: 15px;
+        margin: 0;
+    }
+
+    /* Conteneur du formulaire */
+    .settings-form-container {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Sections du formulaire */
+    .settings-section {
+        margin-bottom: 40px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .settings-section:last-of-type {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    /* Groupes de formulaires */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-file-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-file-input:focus {
+        outline: none;
+        border-color: #c865de;
+        box-shadow: 0 0 0 3px rgba(200, 101, 222, 0.1);
+    }
+
+    .form-textarea {
+        resize: vertical;
+    }
+
+    .form-help-text {
+        font-size: 12px;
+        color: #999;
+        margin-top: 6px;
+    }
+
+    /* Photo actuelle */
+    .current-image {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .current-image-display {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #f0f0f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .current-image-label {
+        font-size: 12px;
+        color: #999;
+        margin-top: 10px;
+    }
+
+    /* Messages d'alerte -->
+    .alert {
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    /* Bouton de soumission */
+    .settings-actions {
+        margin-top: 40px;
+        text-align: center;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        padding: 14px 40px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 91, 179, 0.2);
+        min-width: 250px;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 91, 179, 0.4);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .settings-form-container {
+            padding: 20px;
+        }
+
+        .settings-title {
+            font-size: 24px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-submit {
+            width: 100%;
+            min-width: auto;
+        }
+    }
+</style>
+
+<script>
+function toggleUserMenu(event) {
+    event.preventDefault();
+    const menu = document.getElementById('userMenu');
+    menu.classList.toggle('hidden');
+}
+
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('userMenu');
+    const logoBtn = document.querySelector('.logo-button');
+    if (!menu.contains(event.target) && !logoBtn.contains(event.target)) {
+        menu.classList.add('hidden');
+    }
+});
+</script>
 {% endblock %}

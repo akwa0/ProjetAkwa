@@ -1,23 +1,409 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ContenuPhotoController!{% endblock %}
+{% block title %}Ajouter une photo{% endblock %}
 
 {% block body %}
-<h1>Ajouter une photo</h1>
-{% for message in app.flashes('success') %}
-    <div class="alert alert-success">
-        {{ message }}
-    </div>
-{% endfor %}
-{% for message in app.flashes('error') %}
-    <div class="alert alert-danger">
-        {{ message }}
-    </div>
-{% endfor %}
+<link rel="stylesheet" href="{{ asset('pages/style.css') }}">
 
-{{ form_start(form,{'attr':{'enctype':'multipart/form-data'}}) }}
-    {{ form_row(form.description) }}
-    {{ form_row(form.photo) }}
-    <button type="submit" class="btn btn-primary">Ajouter</button>
-{{ form_end(form) }}
+<!-- Header avec logo et menu profil -->
+<a href="#" class="logo-button" onclick="toggleUserMenu(event)">
+    <img src="{{ asset('/image/Illustration_sans_titre 12.png') }}" alt="Logo" class="logo-icon">
+</a>
+
+<!-- Menu utilisateur -->
+<div id="userMenu" class="user-menu hidden">
+    <div class="user-menu-content">
+        <p class="user-name">Connecté en tant que</p>
+        <p class="user-username">{{ app.user.nom }}</p>
+        <button type="submit" class="logout-btn" form="logoutForm">Se déconnecter</button>
+        <form action="{{ path('app_logout') }}" method="post" class="logout-form" id="logoutForm" style="display: none;">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        </form>
+    </div>
+</div>
+
+<div class="page-container">
+    <!-- En-tête -->
+    <div class="upload-header">
+        <a href="{{ path('app_compte_pro') }}" class="back-button-upload">← Retour au compte</a>
+        <h1 class="upload-title">📸 Ajouter une photo</h1>
+        <p class="upload-subtitle">Partagez vos créations avec votre audience</p>
+    </div>
+
+    <!-- Messages de succès -->
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            ✓ {{ message }}
+        </div>
+    {% endfor %}
+
+    <!-- Messages d'erreur -->
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-error">
+            ✗ {{ message }}
+        </div>
+    {% endfor %}
+
+    <!-- Formulaire d'upload -->
+    <div class="upload-form-container">
+        <div class="upload-form-wrapper">
+            {{ form_start(form, {'attr': {'class': 'upload-form', 'enctype': 'multipart/form-data'}}) }}
+
+            <!-- Section Upload -->
+            <div class="upload-section">
+                <div class="upload-zone">
+                    <div class="upload-zone-content">
+                        <div class="upload-icon">🖼️</div>
+                        <h2 class="upload-zone-title">Télécharger une photo</h2>
+                        <p class="upload-zone-text">Cliquez pour sélectionner ou glissez-déposez votre image</p>
+                        <div class="upload-hint">
+                            JPG, PNG • Taille max: 5MB
+                        </div>
+                    </div>
+                    {{ form_widget(form.photo, {'attr': {'class': 'upload-input'}}) }}
+                </div>
+                {{ form_errors(form.photo) }}
+            </div>
+
+            <!-- Section Description -->
+            <div class="description-section">
+                <div class="form-group">
+                    <label class="form-label">Description de la photo</label>
+                    <p class="form-label-hint">Décrivez votre création (optionnel)</p>
+                    {{ form_widget(form.description, {'attr': {'class': 'form-textarea', 'rows': '5', 'placeholder': 'Racontez l\'histoire de cette création, sa technique, son inspiration...'}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+            </div>
+
+            <!-- Bouton de soumission -->
+            <div class="upload-actions">
+                <button type="submit" class="btn-upload">Ajouter la photo</button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+        <!-- Informations supplémentaires -->
+        <div class="upload-info-panel">
+            <h3 class="info-title">💡 Conseils pour de bonnes photos</h3>
+            <ul class="info-list">
+                <li>Utilisez un bon éclairage naturel si possible</li>
+                <li>Centrez bien votre création dans le cadre</li>
+                <li>Évitez les reflets et les ombres</li>
+                <li>Préférez les formats JPG ou PNG haute qualité</li>
+                <li>Écrivez une description détaillée pour attirer plus de clients</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* En-tête */
+    .upload-header {
+        margin-bottom: 40px;
+    }
+
+    .back-button-upload {
+        display: inline-block;
+        background: #f0f0f0;
+        color: #333;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    .back-button-upload:hover {
+        background: #e0e0e0;
+        transform: translateY(-2px);
+    }
+
+    .upload-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+        margin: 20px 0 10px 0;
+    }
+
+    .upload-subtitle {
+        color: #999;
+        font-size: 15px;
+        margin: 0;
+    }
+
+    /* Conteneur du formulaire */
+    .upload-form-container {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .upload-form-wrapper {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Zone d'upload */
+    .upload-section {
+        margin-bottom: 40px;
+    }
+
+    .upload-zone {
+        position: relative;
+        border: 2px dashed #ddd;
+        border-radius: 12px;
+        padding: 40px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        cursor: pointer;
+    }
+
+    .upload-zone:hover {
+        border-color: #c865de;
+        background: #f5f0f7;
+    }
+
+    .upload-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .upload-zone-content {
+        pointer-events: none;
+    }
+
+    .upload-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+
+    .upload-zone-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 8px 0;
+    }
+
+    .upload-zone-text {
+        color: #666;
+        font-size: 14px;
+        margin: 0 0 12px 0;
+    }
+
+    .upload-hint {
+        color: #999;
+        font-size: 12px;
+        margin: 0;
+    }
+
+    /* Section description */
+    .description-section {
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 4px;
+        font-size: 15px;
+    }
+
+    .form-label-hint {
+        display: block;
+        color: #999;
+        font-size: 12px;
+        font-weight: 400;
+        margin: 2px 0 12px 0;
+    }
+
+    .form-textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        resize: vertical;
+        transition: all 0.3s ease;
+    }
+
+    .form-textarea:focus {
+        outline: none;
+        border-color: #c865de;
+        box-shadow: 0 0 0 3px rgba(200, 101, 222, 0.1);
+    }
+
+    /* Actions */
+    .upload-actions {
+        margin-top: 40px;
+    }
+
+    .btn-upload {
+        width: 100%;
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        padding: 14px 40px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 91, 179, 0.2);
+    }
+
+    .btn-upload:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 91, 179, 0.4);
+    }
+
+    .btn-upload:active {
+        transform: translateY(0);
+    }
+
+    /* Messages d'alerte */
+    .alert {
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    /* Panel d'informations */
+    .upload-info-panel {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        height: fit-content;
+    }
+
+    .info-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 15px 0;
+    }
+
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info-list li {
+        font-size: 12px;
+        color: #666;
+        padding: 8px 0;
+        padding-left: 20px;
+        position: relative;
+        line-height: 1.5;
+    }
+
+    .info-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .upload-form-container {
+            grid-template-columns: 1fr;
+        }
+
+        .upload-form-wrapper {
+            padding: 20px;
+        }
+
+        .upload-zone {
+            padding: 30px 15px;
+        }
+
+        .upload-title {
+            font-size: 24px;
+        }
+
+        .btn-upload {
+            width: 100%;
+        }
+
+        .upload-info-panel {
+            margin-top: 20px;
+        }
+    }
+</style>
+
+<script>
+function toggleUserMenu(event) {
+    event.preventDefault();
+    const menu = document.getElementById('userMenu');
+    menu.classList.toggle('hidden');
+}
+
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('userMenu');
+    const logoBtn = document.querySelector('.logo-button');
+    if (!menu.contains(event.target) && !logoBtn.contains(event.target)) {
+        menu.classList.add('hidden');
+    }
+});
+
+// Amélioration du drag-and-drop
+const uploadZone = document.querySelector('.upload-zone');
+const uploadInput = document.querySelector('.upload-input');
+
+if (uploadZone) {
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = '#c865de';
+        uploadZone.style.background = '#f5f0f7';
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+        uploadZone.style.borderColor = '#ddd';
+        uploadZone.style.background = '#fafafa';
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = '#ddd';
+        uploadZone.style.background = '#fafafa';
+        if (uploadInput && e.dataTransfer.files.length) {
+            uploadInput.files = e.dataTransfer.files;
+        }
+    });
+}
+</script>
 {% endblock %}
