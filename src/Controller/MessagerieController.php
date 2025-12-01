@@ -44,9 +44,14 @@ class MessagerieController extends AbstractController
         // Compter les non-lus
         $nonLus = $messageRepository->countNonLus($user);
 
+        // Déterminer la page de retour selon le rôle
+        $isProAccount = in_array('ROLE_ADMIN', $user->getRoles(), true);
+        $backRoute = $isProAccount ? 'app_compte_pro' : 'app_compte_client';
+
         return $this->render('messagerie/index.html.twig', [
             'messages' => $messages,
             'nonLus' => $nonLus,
+            'backRoute' => $backRoute,
         ]);
     }
 
