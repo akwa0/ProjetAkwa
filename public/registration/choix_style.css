@@ -1,0 +1,347 @@
+/* Profile Choice Page Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.choix-body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5e6f0 0%, #faf5fc 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+    position: relative;
+    padding: 20px;
+}
+
+/* Back Button */
+.back-button {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #6c60f1d2 0%, #8b7fd8 100%);
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 8px 25px rgba(108, 96, 241, 0.3);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 35px rgba(108, 96, 241, 0.4);
+}
+
+.back-icon {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    opacity: 0.95;
+    transition: opacity 0.3s ease;
+}
+
+.back-button:hover .back-icon {
+    opacity: 1;
+}
+
+/* Container */
+.choix-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Card */
+.choix-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 60px 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    animation: slideUp 0.6s ease-out;
+    text-align: center;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Title */
+.choix-title {
+    text-align: center;
+    color: #6c60f1;
+    font-size: 32px;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+}
+
+.choix-subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 40px;
+    font-weight: 400;
+}
+
+/* Profile Choices Container */
+.profile-choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+/* Profile Choice Card */
+.profile-choice {
+    background: linear-gradient(135deg, #f5e6f0 0%, #faf5fc 100%);
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 35px 25px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-choice:hover {
+    transform: translateY(-8px);
+    border-color: #6c60f1;
+    box-shadow: 0 15px 35px rgba(108, 96, 241, 0.15);
+}
+
+.profile-choice::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #6c60f1 0%, #8b7fd8 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-choice:hover::before {
+    opacity: 1;
+}
+
+/* Choice Icon */
+.choice-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+}
+
+.profile-choice:hover .choice-icon {
+    transform: scale(1.1);
+}
+
+/* Choice Title */
+.choice-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Choice Description */
+.choice-description {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+    flex: 1;
+}
+
+/* Choice Button */
+.choice-button {
+    background: linear-gradient(135deg, #6c60f1 0%, #8b7fd8 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.profile-choice:hover .choice-button {
+    box-shadow: 0 5px 15px rgba(108, 96, 241, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Variant Styles */
+.client-choice {
+    border-color: #c865de;
+}
+
+.client-choice:hover {
+    border-color: #6c60f1;
+    background: linear-gradient(135deg, rgba(200, 101, 222, 0.05) 0%, rgba(200, 101, 222, 0.02) 100%);
+}
+
+.pro-choice {
+    border-color: #6c60f1;
+}
+
+.pro-choice:hover {
+    background: linear-gradient(135deg, rgba(108, 96, 241, 0.05) 0%, rgba(108, 96, 241, 0.02) 100%);
+}
+
+/* Footer */
+.choix-footer {
+    padding-top: 30px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.choix-footer p {
+    color: #333;
+    font-size: 14px;
+    margin: 0;
+}
+
+.login-link {
+    color: #6c60f1;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.login-link:hover {
+    color: #5a50d8;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .choix-card {
+        padding: 40px 30px;
+        max-width: 90%;
+        margin: 20px;
+    }
+
+    .choix-title {
+        font-size: 26px;
+    }
+
+    .profile-choices {
+        gap: 20px;
+        grid-template-columns: 1fr;
+    }
+
+    .profile-choice {
+        padding: 30px 20px;
+    }
+
+    .choice-icon {
+        font-size: 40px;
+    }
+
+    .choice-title {
+        font-size: 20px;
+    }
+
+    .back-button {
+        width: 80px;
+        height: 80px;
+        top: 15px;
+        left: 15px;
+    }
+
+    .back-icon {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    .choix-card {
+        padding: 30px 20px;
+        border-radius: 12px;
+    }
+
+    .choix-title {
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+
+    .choix-subtitle {
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+
+    .profile-choices {
+        gap: 15px;
+        grid-template-columns: 1fr;
+    }
+
+    .profile-choice {
+        padding: 25px 15px;
+    }
+
+    .choice-icon {
+        font-size: 36px;
+        margin-bottom: 12px;
+    }
+
+    .choice-title {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    .choice-description {
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .choice-button {
+        font-size: 13px;
+        padding: 10px 20px;
+    }
+
+    .back-button {
+        width: 70px;
+        height: 70px;
+        top: 10px;
+        left: 10px;
+    }
+
+    .back-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .choix-footer {
+        padding-top: 20px;
+    }
+
+    .choix-footer p {
+        font-size: 12px;
+    }
+}

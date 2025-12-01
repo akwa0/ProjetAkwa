@@ -1,32 +1,95 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}S'inscrire{% endblock %}
 
 {% block body %}
-    <div class="actions" style="margin-top: 1rem;">
-        <button><a class="btn btn-secondary" href="{{ path('app_accueil') }}">Aller à l'accueil</a></button>
+<link rel="stylesheet" href="{{ asset('registration/style.css') }}">
+
+<body class="register-body">
+    <a href="{{ path('app_choix_profil_enregistrement') }}" class="back-button">
+        <img src="{{ asset('/image/Illustration_sans_titre 12.png') }}" alt="Retour" class="back-icon">
+    </a>
+
+    <div class="register-container">
+        <div class="register-card">
+            <h1 class="register-title">
+                {% if type == 'pro' %}
+                    S'inscrire en tant que Professionnel
+                {% else %}
+                    S'inscrire
+                {% endif %}
+            </h1>
+
+            {% if form_errors(registrationForm)|length > 0 %}
+                <div class="alert alert-error">
+                    {% if form_errors(registrationForm) %}
+                        <strong>Erreur lors de l'inscription :</strong>
+                        {{ form_errors(registrationForm) }}
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {{ form_start(registrationForm, {'attr': {'class': 'register-form', 'novalidate': 'novalidate'}}) }}
+                <div class="form-group">
+                    {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-input', 'placeholder': 'vous@exemple.com', 'required': 'required'}}) }}
+                    {% if registrationForm.email.vars.errors|length > 0 %}
+                        <div class="form-error">{{ form_errors(registrationForm.email) }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.nom, 'Nom Complet', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-input', 'placeholder': 'Votre nom', 'required': 'required'}}) }}
+                    {% if registrationForm.nom.vars.errors|length > 0 %}
+                        <div class="form-error">{{ form_errors(registrationForm.nom) }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.dateNaissance, 'Date de Naissance', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.dateNaissance, {'attr': {'class': 'form-input', 'required': 'required'}}) }}
+                    {% if registrationForm.dateNaissance.vars.errors|length > 0 %}
+                        <div class="form-error">{{ form_errors(registrationForm.dateNaissance) }}</div>
+                    {% endif %}
+                </div>
+
+                {% if type == 'pro' %}
+                    <div class="form-group">
+                        {{ form_label(registrationForm.experience, 'Années d\'expérience', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(registrationForm.experience, {'attr': {'class': 'form-input', 'placeholder': '0', 'type': 'number', 'required': 'required'}}) }}
+                        {% if registrationForm.experience.vars.errors|length > 0 %}
+                            <div class="form-error">{{ form_errors(registrationForm.experience) }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-input', 'placeholder': 'Au moins 6 caractères', 'required': 'required'}}) }}
+                    <small class="form-hint">Le mot de passe doit contenir au moins 6 caractères.</small>
+                    {% if registrationForm.plainPassword.vars.errors|length > 0 %}
+                        <div class="form-error">{{ form_errors(registrationForm.plainPassword) }}</div>
+                    {% endif %}
+                </div>
+
+                {# CSRF token #}
+                {{ form_widget(registrationForm._token) }}
+
+                <button type="submit" class="register-button">
+                    {% if type == 'pro' %}
+                        S'inscrire comme Professionnel
+                    {% else %}
+                        S'inscrire
+                    {% endif %}
+                </button>
+
+                <div class="register-footer">
+                    <p>Tu as déjà un compte ? <a href="{{ path('app_login') }}" class="login-link">Se connecter</a></p>
+                </div>
+
+            {{ form_end(registrationForm, { render_rest: false }) }}
+        </div>
     </div>
-    <h1>Register</h1>
-
-    {{ form_errors(registrationForm) }}
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            'label': 'Password'
-        }) }}
-        {{ form_row(registrationForm.nom) }}
-        {{ form_row(registrationForm.dateNaissance) }}
-        {% if type == "pro" %}
-            {{ form_row(registrationForm.experience) }}
-            
-        {% endif %}
-
-        {# CSRF token explicit to avoid auto-rendering other fields #}
-        {{ form_row(registrationForm._token) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm, { render_rest: false }) }}
-
-    
+</body>
 {% endblock %}

@@ -1,16 +1,44 @@
 {% extends "base.html.twig" %}
 
+{% block title %}Choisir un profil{% endblock %}
+
 {% block body %}
-    <div class="actions" style="margin-top: 1rem;">
-        <button><a class="btn btn-secondary" href="{{ path('app_accueil') }}">Aller à l'accueil</a></button>
+<link rel="stylesheet" href="{{ asset('registration/choix_style.css') }}">
+
+<body class="choix-body">
+    <a href="{{ path('app_accueil') }}" class="back-button">
+        <img src="{{ asset('/image/Illustration_sans_titre 12.png') }}" alt="Retour" class="back-icon">
+    </a>
+
+    <div class="choix-container">
+        <div class="choix-card">
+            <h1 class="choix-title">Quel type de compte veux-tu créer ?</h1>
+            <p class="choix-subtitle">Choisis ton profil pour commencer</p>
+
+            <div class="profile-choices">
+                <a href="{{ path('app_register', {'type': 'client'}) }}" class="profile-choice client-choice">
+                    <div class="choice-icon">👤</div>
+                    <h2 class="choice-title">Client</h2>
+                    <p class="choice-description">Explore les professionnels et découvre leurs talents</p>
+                    <div class="choice-button">
+                        S'inscrire en tant que Client
+                    </div>
+                </a>
+
+                <a href="{{ path('app_register', {'type': 'pro'}) }}" class="profile-choice pro-choice">
+                    <div class="choice-icon">💼</div>
+                    <h2 class="choice-title">Professionnel</h2>
+                    <p class="choice-description">Partage tes services et mets en avant ton talent</p>
+                    <div class="choice-button">
+                        S'inscrire en tant que Pro
+                    </div>
+                </a>
+            </div>
+
+            <div class="choix-footer">
+                <p>Tu as déjà un compte ? <a href="{{ path('app_login') }}" class="login-link">Se connecter</a></p>
+            </div>
+        </div>
     </div>
-    <br>
-
-
-
-    <button><a href="{{ path ('app_register', {'type' : 'pro'}) }}">Pro</a></button>
-    <button><a href="{{ path ('app_register', {'type' : 'client'}) }}">Client</a></button>
-
-    
-
+</body>
 {% endblock %}
